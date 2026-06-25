@@ -11,7 +11,6 @@
         android:layout_weight="1">
 
         <LinearLayout
-            android:id="@+id/customerListRoot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -20,7 +19,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="YOUR LEDGER"
+                android:text="COLLECTION ASSISTANT"
                 android:textColor="@color/primary"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -29,55 +28,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="@string/customer_list"
+                android:text="Reminders"
                 android:textColor="@color/primary_text"
-                android:textSize="28sp"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Manage balances and account activity."
+                android:text="Gently follow up on pending payments."
                 android:textColor="@color/secondary_text"
                 android:textSize="14sp" />
 
-            <Button
-                android:id="@+id/addCustomerFromListButton"
+            <TextView
+                android:id="@+id/reminderSummaryText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:background="@drawable/primary_button_background"
-                android:text="@string/add_customer"
-                android:textColor="@android:color/white"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/customerListEmptyText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:background="@drawable/panel_background"
-                android:padding="16dp"
-                android:textColor="@color/secondary_text"
-                android:textSize="15sp" />
+                android:padding="18dp"
+                android:textColor="@color/primary_text"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <LinearLayout
-                android:id="@+id/customerListContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="vertical" />
-
-            <Button
-                android:id="@+id/backFromCustomersButton"
+                android:id="@+id/reminderListContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/secondary_button_background"
-                android:text="@string/back"
-                android:textColor="@color/primary"
-                android:textStyle="bold" />
+                android:orientation="vertical" />
         </LinearLayout>
     </ScrollView>
 

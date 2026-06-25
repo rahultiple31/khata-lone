@@ -16,6 +16,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -27,13 +28,13 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         database = LedgerDatabaseHelper(this)
+        database.seedDemoDataIfEmpty()
         showSplash()
     }
 
     override fun onBackPressed() {
         when (currentScreen) {
             Screen.SPLASH -> Unit
-            Screen.LOGIN -> super.onBackPressed()
             Screen.DASHBOARD -> super.onBackPressed()
             else -> showDashboard()
         }
@@ -43,11 +44,7 @@ class MainActivity : Activity() {
         currentScreen = Screen.SPLASH
         setContentView(R.layout.activity_splash)
         Handler(Looper.getMainLooper()).postDelayed({
-            if (isLoggedIn()) {
-                showDashboard()
-            } else {
-                showLogin()
-            }
+            showDashboard()
         }, 800)
     }
 
@@ -75,29 +72,30 @@ class MainActivity : Activity() {
         setContentView(R.layout.screen_dashboard)
 
         val summary = database.getDashboardSummary()
-        find<TextView>(R.id.dashboardBalanceText).text = "Balance: ${formatMoney(summary.balance)}"
-        find<TextView>(R.id.dashboardCustomerCountText).text = "${summary.customerCount} customers"
-        find<TextView>(R.id.dashboardCreditText).text = "Credit\n${formatMoney(summary.totalCredit)}"
-        find<TextView>(R.id.dashboardDebitText).text = "Debit\n${formatMoney(summary.totalDebit)}"
+        val customers = database.getCustomers()
+        val receiveCount = customers.count { database.getCustomerSummary(it.id).balance >= 0.0 }
+        val payCount = customers.count { database.getCustomerSummary(it.id).balance < 0.0 }
 
-        val recent = database.getRecentTransactions(limit = 5)
-        find<TextView>(R.id.recentTransactionsText).text = if (recent.isEmpty()) {
-            "No transactions yet. Add a customer, then add credit or debit entries."
-        } else {
-            recent.joinToString(separator = "\n\n") { item ->
-                val transaction = item.transaction
-                "${item.customerName}\n${typeLabel(transaction.type)} ${formatMoney(transaction.amount)} - ${formatDate(transaction.createdAt)}${noteSuffix(transaction.note)}"
-            }
+        find<TextView>(R.id.todayLabelText).text = todayLabel()
+        find<TextView>(R.id.dashboardBalanceText).text = formatMoney(summary.balance)
+        find<TextView>(R.id.dashboardCustomerCountText).text = "From $receiveCount customers"
+        find<TextView>(R.id.dashboardPayCountText).text = "To $payCount customers"
+        find<TextView>(R.id.dashboardCreditText).text = formatMoney(summary.totalCredit)
+        find<TextView>(R.id.dashboardDebitText).text = formatMoney(summary.totalDebit)
+        find<TextView>(R.id.weeklyInsightText).text = "You collected ${formatMoney(summary.totalDebit)} this week"
+
+        val recentCustomers = find<LinearLayout>(R.id.recentCustomersContainer)
+        recentCustomers.removeAllViews()
+        customers.take(4).forEach { customer ->
+            recentCustomers.addView(compactCustomerRow(customer))
         }
 
         find<Button>(R.id.addCustomerButton).setOnClickListener { showAddCustomer() }
         find<Button>(R.id.customerListButton).setOnClickListener { showCustomerList() }
         find<Button>(R.id.addTransactionButton).setOnClickListener { showAddTransaction() }
-        find<Button>(R.id.viewLedgerButton).setOnClickListener { showLedger() }
-        find<Button>(R.id.logoutButton).setOnClickListener {
-            getPreferences(MODE_PRIVATE).edit().putBoolean(KEY_LOGGED_IN, false).apply()
-            showLogin()
-        }
+        find<Button>(R.id.viewReportsButton).setOnClickListener { showReports() }
+        find<Button>(R.id.sendReminderButton).setOnClickListener { showReminders() }
+        bindBottomNav(Screen.DASHBOARD)
     }
 
     private fun showAddCustomer() {
@@ -152,6 +150,55 @@ class MainActivity : Activity() {
 
         find<Button>(R.id.addCustomerFromListButton).setOnClickListener { showAddCustomer() }
         find<Button>(R.id.backFromCustomersButton).setOnClickListener { showDashboard() }
+        bindBottomNav(Screen.CUSTOMER_LIST)
+    }
+
+    private fun showReports() {
+        currentScreen = Screen.REPORTS
+        currentLedgerCustomerId = null
+        setContentView(R.layout.screen_reports)
+
+        val summary = database.getDashboardSummary()
+        find<TextView>(R.id.reportCollectedText).text = "Payments collected\n${formatMoney(summary.totalDebit)}"
+        find<TextView>(R.id.reportCreditText).text = "Credit given\n${formatMoney(summary.totalCredit)}"
+        find<TextView>(R.id.reportNetText).text = "Net movement\n${formatMoney(summary.totalDebit - summary.totalCredit)}"
+
+        renderReportChart(find(R.id.reportChartContainer))
+        renderRecentTransactions(find(R.id.reportTransactionsContainer), limit = 8)
+        bindBottomNav(Screen.REPORTS)
+    }
+
+    private fun showReminders() {
+        currentScreen = Screen.REMINDERS
+        currentLedgerCustomerId = null
+        setContentView(R.layout.screen_reminders)
+
+        val dueCustomers = database.getCustomers().filter { database.getCustomerSummary(it.id).balance > 0.0 }
+        val totalDue = dueCustomers.sumOf { database.getCustomerSummary(it.id).balance }
+        find<TextView>(R.id.reminderSummaryText).text = "${dueCustomers.size} pending reminders\n${formatMoney(totalDue)} due"
+
+        val container = find<LinearLayout>(R.id.reminderListContainer)
+        container.removeAllViews()
+        if (dueCustomers.isEmpty()) {
+            container.addView(text("No pending dues. There are no reminder-ready customers right now.", 15f, R.color.secondary_text))
+        } else {
+            dueCustomers.forEach { customer ->
+                val balance = database.getCustomerSummary(customer.id).balance
+                container.addView(reminderRow(customer, balance))
+            }
+        }
+
+        bindBottomNav(Screen.REMINDERS)
+    }
+
+    private fun showSettings() {
+        currentScreen = Screen.SETTINGS
+        currentLedgerCustomerId = null
+        setContentView(R.layout.screen_settings)
+
+        find<TextView>(R.id.settingsSummaryText).text =
+            "App language\nEnglish\n\nDark mode\nAvailable in web app\n\nBackup & restore\nUse GitHub artifact APK for testing builds\n\nMobile & security\nOTP login can be added in the next version"
+        bindBottomNav(Screen.SETTINGS)
     }
 
     private fun showAddTransaction(preselectedCustomerId: Long? = null) {
@@ -290,6 +337,48 @@ class MainActivity : Activity() {
         return row
     }
 
+    private fun compactCustomerRow(customer: Customer): View {
+        val summary = database.getCustomerSummary(customer.id)
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(dp(4), dp(12), dp(4), dp(12))
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+
+        row.addView(TextView(this).apply {
+            text = initials(customer.name)
+            gravity = android.view.Gravity.CENTER
+            setTextColor(getColor(android.R.color.white))
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            background = getDrawable(R.drawable.avatar_background)
+            layoutParams = LinearLayout.LayoutParams(dp(42), dp(42))
+        })
+
+        row.addView(LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply {
+                leftMargin = dp(12)
+            }
+            addView(text(customer.name, 14f, R.color.primary_text, bold = true))
+            addView(text("+91 ${customer.mobile}", 11f, R.color.secondary_text))
+        })
+
+        row.addView(TextView(this).apply {
+            val balance = summary.balance
+            text = formatMoney(balance)
+            setTextColor(getColor(if (balance >= 0.0) R.color.success else R.color.coral))
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            gravity = android.view.Gravity.END
+            layoutParams = LinearLayout.LayoutParams(dp(105), ViewGroup.LayoutParams.WRAP_CONTENT)
+        })
+
+        row.setOnClickListener { showLedger(customer.id) }
+        return row
+    }
+
     private fun transactionRow(transaction: LedgerTransaction): View {
         val row = panelLayout()
         val color = if (transaction.type == TYPE_CREDIT) R.color.success else R.color.danger
@@ -302,6 +391,67 @@ class MainActivity : Activity() {
         }
 
         return row
+    }
+
+    private fun reminderRow(customer: Customer, amount: Double): View {
+        val row = panelLayout()
+        row.addView(text(customer.name, 16f, R.color.primary_text, bold = true))
+        row.addView(text("+91 ${customer.mobile}", 13f, R.color.secondary_text))
+        row.addView(text("${formatMoney(amount)} due", 18f, R.color.success, bold = true))
+        row.addView(text("Send reminder via WhatsApp or SMS", 13f, R.color.primary))
+        return row
+    }
+
+    private fun renderRecentTransactions(container: LinearLayout, limit: Int) {
+        container.removeAllViews()
+        val recent = database.getRecentTransactions(limit)
+        if (recent.isEmpty()) {
+            container.addView(text("No transactions yet.", 15f, R.color.secondary_text))
+        } else {
+            recent.forEach { item ->
+                val transaction = item.transaction
+                container.addView(panelLayout().apply {
+                    addView(text(item.customerName, 15f, R.color.primary_text, bold = true))
+                    addView(text("${typeLabel(transaction.type)} ${formatMoney(transaction.amount)}", 18f, if (transaction.type == TYPE_CREDIT) R.color.coral else R.color.success, bold = true))
+                    addView(text("${transaction.note.ifBlank { "Ledger entry" }} • ${formatDate(transaction.createdAt)}", 12f, R.color.secondary_text))
+                })
+            }
+        }
+    }
+
+    private fun renderReportChart(container: LinearLayout) {
+        container.removeAllViews()
+        val values = listOf(40 to 62, 58 to 48, 47 to 76, 75 to 55, 65 to 88, 80 to 71, 48 to 79)
+        val days = listOf("M", "T", "W", "T", "F", "S", "S")
+        values.forEachIndexed { index, pair ->
+            val group = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                gravity = android.view.Gravity.BOTTOM or android.view.Gravity.CENTER_HORIZONTAL
+                layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1f)
+            }
+            val bars = LinearLayout(this).apply {
+                gravity = android.view.Gravity.BOTTOM or android.view.Gravity.CENTER_HORIZONTAL
+                orientation = LinearLayout.HORIZONTAL
+                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 0, 1f)
+            }
+            bars.addView(bar(pair.first, R.color.coral))
+            bars.addView(bar(pair.second, R.color.primary))
+            group.addView(bars)
+            group.addView(text(days[index], 10f, R.color.secondary_text).apply {
+                gravity = android.view.Gravity.CENTER
+            })
+            container.addView(group)
+        }
+    }
+
+    private fun bar(percent: Int, colorRes: Int): View {
+        return View(this).apply {
+            setBackgroundColor(getColor(colorRes))
+            layoutParams = LinearLayout.LayoutParams(dp(10), dp((percent * 1.35).toInt())).apply {
+                leftMargin = dp(2)
+                rightMargin = dp(2)
+            }
+        }
     }
 
     private fun panelLayout(): LinearLayout {
@@ -352,7 +502,8 @@ class MainActivity : Activity() {
     }
 
     private fun formatMoney(amount: Double): String {
-        return String.format(Locale.US, "Rs. %.2f", amount)
+        val prefix = if (amount < 0.0) "-₹" else "₹"
+        return prefix + String.format(Locale.US, "%,.0f", kotlin.math.abs(amount))
     }
 
     private fun formatDate(timestamp: Long): String {
@@ -367,12 +518,36 @@ class MainActivity : Activity() {
         return if (note.isBlank()) "" else "\n$note"
     }
 
-    private fun isLoggedIn(): Boolean {
-        return getPreferences(MODE_PRIVATE).getBoolean(KEY_LOGGED_IN, false)
-    }
-
     private fun dp(value: Int): Int {
         return (value * resources.displayMetrics.density).toInt()
+    }
+
+    private fun todayLabel(): String {
+        val calendar = Calendar.getInstance()
+        return SimpleDateFormat("EEEE, d MMMM", Locale.US).format(calendar.time).uppercase(Locale.US)
+    }
+
+    private fun initials(name: String): String {
+        return name.trim().split(Regex("\\s+")).take(2).mapNotNull { it.firstOrNull()?.toString() }.joinToString("").uppercase(Locale.US).ifBlank { "AS" }
+    }
+
+    private fun bindBottomNav(active: Screen) {
+        val activeColor = getColor(R.color.primary)
+        val mutedColor = getColor(R.color.secondary_text)
+        val buttons = listOf(
+            R.id.navHomeButton to Screen.DASHBOARD,
+            R.id.navCustomersButton to Screen.CUSTOMER_LIST,
+            R.id.navReportsButton to Screen.REPORTS,
+            R.id.navSettingsButton to Screen.SETTINGS
+        )
+        buttons.forEach { (id, screen) ->
+            find<Button>(id).setTextColor(if (screen == active) activeColor else mutedColor)
+        }
+        find<Button>(R.id.navHomeButton).setOnClickListener { showDashboard() }
+        find<Button>(R.id.navCustomersButton).setOnClickListener { showCustomerList() }
+        find<Button>(R.id.navEntryButton).setOnClickListener { showAddTransaction() }
+        find<Button>(R.id.navReportsButton).setOnClickListener { showReports() }
+        find<Button>(R.id.navSettingsButton).setOnClickListener { showSettings() }
     }
 
     private fun toast(message: String) {
@@ -388,11 +563,13 @@ class MainActivity : Activity() {
         ADD_CUSTOMER,
         CUSTOMER_LIST,
         ADD_TRANSACTION,
-        LEDGER
+        LEDGER,
+        REPORTS,
+        REMINDERS,
+        SETTINGS
     }
 
     companion object {
-        private const val KEY_LOGGED_IN = "logged_in"
         private const val TYPE_CREDIT = "CREDIT"
         private const val TYPE_DEBIT = "DEBIT"
     }

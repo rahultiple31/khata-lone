@@ -73,6 +73,26 @@ class LedgerDatabaseHelper(context: Context) :
         return customers
     }
 
+    fun seedDemoDataIfEmpty() {
+        if (getCustomers().isNotEmpty()) {
+            return
+        }
+
+        val rohan = addCustomer("Rohan Mehta", "98765 12098", 0.0)
+        val priya = addCustomer("Priya Sharma", "98122 43610", 0.0)
+        val sameer = addCustomer("Sameer Khan", "99876 54321", 0.0)
+        val neha = addCustomer("Neha Provision Store", "97654 21890", 0.0)
+        val vikram = addCustomer("Vikram Singh", "98230 77442", 0.0)
+        val meera = addCustomer("Meera Joshi", "99001 88221", 0.0)
+
+        addTransaction(rohan, "CREDIT", 4250.0, "Opening credit")
+        addTransaction(priya, "DEBIT", 1800.0, "Payment received")
+        addTransaction(sameer, "CREDIT", 3120.0, "Opening credit")
+        addTransaction(neha, "CREDIT", 2350.0, "Stock supplied")
+        addTransaction(vikram, "CREDIT", 1000.0, "Grocery purchase")
+        addTransaction(meera, "DEBIT", 650.0, "Cash received")
+    }
+
     fun addTransaction(customerId: Long, type: String, amount: Double, note: String): Long {
         val values = ContentValues().apply {
             put("customer_id", customerId)
