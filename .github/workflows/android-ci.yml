@@ -43,9 +43,21 @@ jobs:
       - name: Build debug APK
         run: gradle assembleDebug --stacktrace
 
-      - name: Upload APK artifact
+      - name: Build unsigned release package
+        run: gradle assembleRelease bundleRelease --stacktrace
+
+      - name: Upload debug APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: hisably-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Upload unsigned release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: hisably-release-unsigned
+          path: |
+            app/build/outputs/apk/release/app-release-unsigned.apk
+            app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: error
