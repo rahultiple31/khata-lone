@@ -1,0 +1,132 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate Android PWA
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check required app files
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          required_files=(
+            "index.html"
+            "styles.css"
+            "app.js"
+            "manifest.webmanifest"
+            "sw.js"
+            "icon.svg"
+          )
+
+          for file in "${required_files[@]}"; do
+            test -f "$file" || {
+              echo "::error file=$file::Required Android PWA file is missing"
+              exit 1
+            }
+          done
+
+      - name: Validate manifest and service worker wiring
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          grep -q 'rel="manifest"' index.html || {
+            echo "::error file=index.html::index.html must link the web app manifest"
+            exit 1
+          }
+
+          grep -q 'navigator.serviceWorker.register' app.js || {
+            echo "::error file=app.js::app.js must register the service worker"
+            exit 1
+          }
+
+          node <<'NODE'
+          const fs = require('fs');
+
+          const manifest = JSON.parse(fs.readFileSync('manifest.webmanifest', 'utf8'));
+          const requiredManifestFields = ['name', 'short_name', 'start_url', 'display', 'icons'];
+
+          for (const field of requiredManifestFields) {
+            if (!manifest[field]) {
+              console.error(`::error file=manifest.webmanifest::Missing manifest field: ${field}`);
+              process.exit(1);
+            }
+          }
+
+          if (manifest.display !== 'standalone') {
+            console.error('::error file=manifest.webmanifest::Android installability expects display to be standalone');
+            process.exit(1);
+          }
+
+          if (!Array.isArray(manifest.icons) || manifest.icons.length === 0) {
+            console.error('::error file=manifest.webmanifest::At least one app icon is required');
+            process.exit(1);
+          }
+
+          const serviceWorker = fs.readFileSync('sw.js', 'utf8');
+          for (const asset of ['index.html', 'styles.css', 'app.js', 'manifest.webmanifest', 'icon.svg']) {
+            if (!serviceWorker.includes(asset)) {
+              console.error(`::error file=sw.js::Service worker cache list should include ${asset}`);
+              process.exit(1);
+            }
+          }
+          NODE
+
+      - name: Prepare deploy artifact
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p dist
+          cp index.html styles.css app.js manifest.webmanifest sw.js icon.svg dist/
+          touch dist/.nojekyll
+
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Deploy static PWA
+        id: deployment
+        uses: actions/deploy-pages@v4
