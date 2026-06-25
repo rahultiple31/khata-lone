@@ -23,4 +23,9 @@ class LedgerMathTest {
     fun positiveAmountAcceptsValidDecimal() {
         assertEquals(99.5, LedgerMath.positiveAmount("99.50") ?: 0.0, 0.0)
     }
+
+    @Test
+    fun positiveAmountTrimsWhitespace() {
+        assertEquals(120.0, LedgerMath.positiveAmount(" 120 ") ?: 0.0, 0.0)
+    }
 }

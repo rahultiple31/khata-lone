@@ -71,6 +71,7 @@ class MainActivity : Activity() {
 
     private fun showDashboard() {
         currentScreen = Screen.DASHBOARD
+        currentLedgerCustomerId = null
         setContentView(R.layout.screen_dashboard)
 
         val summary = database.getDashboardSummary()
@@ -101,6 +102,7 @@ class MainActivity : Activity() {
 
     private fun showAddCustomer() {
         currentScreen = Screen.ADD_CUSTOMER
+        currentLedgerCustomerId = null
         setContentView(R.layout.screen_add_customer)
 
         find<Button>(R.id.saveCustomerButton).setOnClickListener {
@@ -130,6 +132,7 @@ class MainActivity : Activity() {
 
     private fun showCustomerList() {
         currentScreen = Screen.CUSTOMER_LIST
+        currentLedgerCustomerId = null
         setContentView(R.layout.screen_customer_list)
 
         val customers = database.getCustomers()
@@ -153,6 +156,7 @@ class MainActivity : Activity() {
 
     private fun showAddTransaction(preselectedCustomerId: Long? = null) {
         currentScreen = Screen.ADD_TRANSACTION
+        currentLedgerCustomerId = preselectedCustomerId
         val customers = database.getCustomers()
         if (customers.isEmpty()) {
             toast("Add a customer first")
