@@ -101,6 +101,25 @@ git push origin main
 
 The Android CI pipeline runs automatically when you push to `main`.
 
+### Android APK delivery flow
+
+```text
+Developer
+  |
+  v
+Push code to GitHub
+  |
+  v
+GitHub Actions builds APK
+  |
+  v
+Choose one:
+  |-- GitHub Artifacts: download for testing
+  |-- GitHub Releases: share APK
+  |-- Firebase App Distribution: beta testing
+  `-- Google Play Internal Testing: recommended before production
+```
+
 ### Download APK artifact
 
 1. Open the completed **Android CI** workflow run.
@@ -112,10 +131,10 @@ Install it on an Android phone for testing. If Android blocks the install, enabl
 
 ### Deployment options
 
-- **Google Play Store**: Main public production release channel.
-- **Google Play Console internal testing track**: Best for private testing with invited testers before production.
-- **Firebase App Distribution**: Good for sharing APK builds with testers quickly.
 - **GitHub Actions Artifacts**: Best for simple testing after every push.
 - **GitHub Releases**: Best for sharing APK files with other people.
+- **Firebase App Distribution**: Good for sharing APK builds with testers quickly.
+- **Google Play Console internal testing track**: Recommended before production.
+- **Google Play Store**: Main public production release channel.
 
 For Google Play Store, upload a signed Android App Bundle (`.aab`). For Firebase App Distribution or GitHub Releases, you can share a signed APK with testers.
