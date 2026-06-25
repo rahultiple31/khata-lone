@@ -1,4 +1,4 @@
-name: CI/CD
+name: Build Android PWA
 
 on:
   push:
@@ -13,12 +13,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: pages-${{ github.ref }}
-  cancel-in-progress: false
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  validate:
-    name: Validate Android PWA
+  build:
+    name: Build Ready-to-Deploy App
     runs-on: ubuntu-latest
 
     steps:
@@ -37,6 +37,8 @@ jobs:
             "manifest.webmanifest"
             "sw.js"
             "icon.svg"
+            "assets/icons/icon-192.png"
+            "assets/icons/icon-512.png"
           )
 
           for file in "${required_files[@]}"; do
@@ -46,7 +48,7 @@ jobs:
             }
           done
 
-      - name: Validate manifest and service worker wiring
+      - name: Validate Android PWA metadata
         shell: bash
         run: |
           set -euo pipefail
@@ -65,7 +67,16 @@ jobs:
           const fs = require('fs');
 
           const manifest = JSON.parse(fs.readFileSync('manifest.webmanifest', 'utf8'));
-          const requiredManifestFields = ['name', 'short_name', 'start_url', 'display', 'icons'];
+          const requiredManifestFields = [
+            'name',
+            'short_name',
+            'start_url',
+            'scope',
+            'display',
+            'background_color',
+            'theme_color',
+            'icons'
+          ];
 
           for (const field of requiredManifestFields) {
             if (!manifest[field]) {
@@ -79,13 +90,30 @@ jobs:
             process.exit(1);
           }
 
-          if (!Array.isArray(manifest.icons) || manifest.icons.length === 0) {
-            console.error('::error file=manifest.webmanifest::At least one app icon is required');
-            process.exit(1);
+          const icons = Array.isArray(manifest.icons) ? manifest.icons : [];
+          for (const size of ['192x192', '512x512']) {
+            const icon = icons.find(item => item.sizes === size && item.type === 'image/png');
+            if (!icon) {
+              console.error(`::error file=manifest.webmanifest::Missing PNG icon size ${size}`);
+              process.exit(1);
+            }
+
+            if (!fs.existsSync(icon.src)) {
+              console.error(`::error file=manifest.webmanifest::Manifest icon file does not exist: ${icon.src}`);
+              process.exit(1);
+            }
           }
 
           const serviceWorker = fs.readFileSync('sw.js', 'utf8');
-          for (const asset of ['index.html', 'styles.css', 'app.js', 'manifest.webmanifest', 'icon.svg']) {
+          for (const asset of [
+            'index.html',
+            'styles.css',
+            'app.js',
+            'manifest.webmanifest',
+            'icon.svg',
+            'assets/icons/icon-192.png',
+            'assets/icons/icon-512.png'
+          ]) {
             if (!serviceWorker.includes(asset)) {
               console.error(`::error file=sw.js::Service worker cache list should include ${asset}`);
               process.exit(1);
@@ -93,37 +121,20 @@ jobs:
           }
           NODE
 
-      - name: Prepare deploy artifact
-        if: github.event_name != 'pull_request'
+      - name: Build static package
         shell: bash
         run: |
           set -euo pipefail
 
-          mkdir -p dist
-          cp index.html styles.css app.js manifest.webmanifest sw.js icon.svg dist/
+          rm -rf dist
+          mkdir -p dist/assets/icons
+          cp index.html styles.css app.js manifest.webmanifest sw.js icon.svg README.md dist/
+          cp assets/icons/icon-192.png assets/icons/icon-512.png dist/assets/icons/
           touch dist/.nojekyll
 
-      - name: Upload Pages artifact
-        if: github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload ready app artifact
+        uses: actions/upload-artifact@v4
         with:
+          name: hisably-android-pwa
           path: dist
-
-  deploy:
-    name: Deploy to GitHub Pages
-    if: github.event_name != 'pull_request'
-    needs: validate
-    runs-on: ubuntu-latest
-
-    permissions:
-      pages: write
-      id-token: write
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy static PWA
-        id: deployment
-        uses: actions/deploy-pages@v4
+          if-no-files-found: error
