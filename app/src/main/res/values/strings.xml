@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Hisably</string>
-    <string name="home_message">This beginner-friendly screen is built with Kotlin and XML. Next you can add forms, local storage, and ledger features.</string>
+    <string name="deployment_status">Android APK deployment test</string>
+    <string name="home_message">This is the default native Android app page. It means the APK was installed and launched successfully. It is not an \"Application not found\" error.</string>
+    <string name="why_title">Why this page is showing</string>
+    <string name="why_message">The current Android code includes only this basic home screen/demo page. Business features like login, ledger, customer forms, payments, and database storage still need to be developed.</string>
+    <string name="next_step_title">Next features to build</string>
+    <string name="next_features">1. Login screen\n2. Dashboard\n3. Add customer\n4. Add credit/debit entry\n5. View ledger\n6. Local database storage</string>
+    <string name="testing_note">For testing, this APK is working correctly. The next step is to develop the app features.</string>
 </resources>

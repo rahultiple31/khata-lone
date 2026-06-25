@@ -2,6 +2,8 @@
 <resources>
     <color name="screen_background">#F6F7FB</color>
     <color name="primary">#5556C9</color>
+    <color name="success">#147A52</color>
+    <color name="surface">#FFFFFF</color>
     <color name="primary_text">#171827</color>
     <color name="secondary_text">#5B6078</color>
 </resources>

@@ -5,9 +5,10 @@ import org.junit.Test
 
 class GreetingMessageTest {
     @Test
-    fun subtitleMentionsKotlinAndroid() {
+    fun subtitleConfirmsApkInstalled() {
         val subtitle = GreetingMessage.subtitle()
 
-        assertTrue(subtitle.contains("Kotlin Android"))
+        assertTrue(subtitle.contains("APK installed successfully"))
+        assertTrue(subtitle.contains("running correctly"))
     }
 }
