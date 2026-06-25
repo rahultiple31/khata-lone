@@ -19,7 +19,7 @@ This repository includes a GitHub Actions workflow at `.github/workflows/ci-cd.y
 
 ## Native Android app
 
-This repository also includes a simple beginner-friendly native Android project built with Kotlin.
+This repository also includes a beginner-friendly native Android ledger app built with Kotlin, XML, and local SQLite storage.
 
 ### Important Android languages and tools
 
@@ -42,15 +42,33 @@ gradlew.bat
 app/
   build.gradle
   src/main/AndroidManifest.xml
+  src/main/java/com/hisably/ledger/LedgerDatabaseHelper.kt
+  src/main/java/com/hisably/ledger/LedgerMath.kt
+  src/main/java/com/hisably/ledger/LedgerModels.kt
   src/main/java/com/hisably/ledger/MainActivity.kt
-  src/main/java/com/hisably/ledger/GreetingMessage.kt
-  src/main/res/layout/activity_main.xml
+  src/main/res/layout/activity_splash.xml
+  src/main/res/layout/screen_add_customer.xml
+  src/main/res/layout/screen_add_transaction.xml
+  src/main/res/layout/screen_customer_list.xml
+  src/main/res/layout/screen_dashboard.xml
+  src/main/res/layout/screen_ledger.xml
+  src/main/res/layout/screen_login.xml
   src/main/res/values/colors.xml
   src/main/res/values/strings.xml
   src/main/res/values/styles.xml
-  src/test/java/com/hisably/ledger/GreetingMessageTest.kt
+  src/test/java/com/hisably/ledger/LedgerMathTest.kt
 .github/workflows/android-ci.yml
 ```
+
+### Native app features
+
+- Splash screen and login screen.
+- Dashboard with customer count, total credit, total debit, balance, and recent transactions.
+- Add customer with name, mobile number, and opening balance.
+- Customer list with quick actions for adding entries and viewing ledger.
+- Add credit/debit transaction with amount and note.
+- Customer ledger with balance summary and transaction history.
+- Local SQLite database for customers and transactions.
 
 ### Build locally
 
