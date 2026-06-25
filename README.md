@@ -16,3 +16,85 @@ This repository includes a GitHub Actions workflow at `.github/workflows/ci-cd.y
 - The workflow uploads a ready static artifact named `hisably-android-pwa`.
 - For manual GitHub Pages deployment, serve the repository root or the downloaded artifact contents.
 - After it is available over HTTPS, Android users can open the site in Chrome and choose **Add to Home screen** or **Install app**.
+
+## Native Android app
+
+This repository also includes a simple beginner-friendly native Android project built with Kotlin.
+
+### Important Android languages and tools
+
+- **Kotlin**: The main recommended language for modern Android development. Use it for screens, app logic, events, and data handling.
+- **Java**: Older Android apps and many libraries still use Java. It is useful to understand because Kotlin and Java work together on Android.
+- **XML**: Used for traditional Android layouts, colors, strings, themes, and manifest configuration.
+- **Gradle**: The Android build system. It downloads dependencies, compiles Kotlin/Java, runs tests, and creates APK/AAB files.
+- **Basic SQL/SQLite**: Useful for saving local app data on the phone, such as customers, transactions, notes, and settings.
+- **Optional JavaScript/React Native**: A cross-platform option when you want to build Android and iOS apps with JavaScript/TypeScript.
+- **Optional Dart/Flutter**: A cross-platform option from Google for Android, iOS, web, and desktop apps using Dart.
+
+### Project structure
+
+```text
+settings.gradle
+build.gradle
+gradle.properties
+app/
+  build.gradle
+  src/main/AndroidManifest.xml
+  src/main/java/com/hisably/ledger/MainActivity.kt
+  src/main/java/com/hisably/ledger/GreetingMessage.kt
+  src/main/res/layout/activity_main.xml
+  src/main/res/values/colors.xml
+  src/main/res/values/strings.xml
+  src/main/res/values/styles.xml
+  src/test/java/com/hisably/ledger/GreetingMessageTest.kt
+.github/workflows/android-ci.yml
+```
+
+### Build locally
+
+Install Android Studio or the Android SDK, Java 17, and Gradle 8.9 or newer. Then run:
+
+```powershell
+gradle testDebugUnitTest
+gradle assembleDebug
+```
+
+The debug APK will be created at:
+
+```text
+app/build/outputs/apk/debug/app-debug.apk
+```
+
+### Push code to GitHub
+
+```powershell
+git status -sb
+git add .
+git commit -m "Add native Android Kotlin app"
+git push origin main
+```
+
+### Run GitHub Actions pipeline
+
+The Android CI pipeline runs automatically when you push to `main` or open a pull request.
+
+To run it manually:
+
+1. Open the repository on GitHub.
+2. Go to **Actions**.
+3. Select **Android CI**.
+4. Click **Run workflow**.
+
+### Download APK artifact
+
+1. Open the completed **Android CI** workflow run.
+2. Scroll to **Artifacts**.
+3. Download `hisably-debug-apk`.
+4. Unzip it to get `app-debug.apk`.
+
+### Deployment options
+
+- **Google Play Store**: Main public production release channel.
+- **Google Play Console internal testing track**: Best for private testing with invited testers before production.
+- **Firebase App Distribution**: Good for sharing APK builds with testers quickly.
+- **GitHub Releases**: Useful for attaching APK files to versioned releases, especially for internal or open-source distribution.
