@@ -1,0 +1,12 @@
+{
+  "name": "Hisably Digital Ledger",
+  "short_name": "Hisably",
+  "description": "A simple digital credit ledger for small businesses.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f7fb",
+  "theme_color": "#5556c9",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
