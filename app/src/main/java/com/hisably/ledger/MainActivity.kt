@@ -49,7 +49,6 @@ class MainActivity : Activity() {
     }
 
     private fun showLogin() {
-        currentScreen = Screen.LOGIN
         setContentView(R.layout.screen_login)
 
         find<Button>(R.id.loginButton).setOnClickListener {
@@ -174,7 +173,9 @@ class MainActivity : Activity() {
         setContentView(R.layout.screen_reminders)
 
         val dueCustomers = database.getCustomers().filter { database.getCustomerSummary(it.id).balance > 0.0 }
-        val totalDue = dueCustomers.sumOf { database.getCustomerSummary(it.id).balance }
+        val totalDue = dueCustomers.fold(0.0) { total, customer ->
+            total + database.getCustomerSummary(customer.id).balance
+        }
         find<TextView>(R.id.reminderSummaryText).text = "${dueCustomers.size} pending reminders\n${formatMoney(totalDue)} due"
 
         val container = find<LinearLayout>(R.id.reminderListContainer)
@@ -413,7 +414,8 @@ class MainActivity : Activity() {
                 container.addView(panelLayout().apply {
                     addView(text(item.customerName, 15f, R.color.primary_text, bold = true))
                     addView(text("${typeLabel(transaction.type)} ${formatMoney(transaction.amount)}", 18f, if (transaction.type == TYPE_CREDIT) R.color.coral else R.color.success, bold = true))
-                    addView(text("${transaction.note.ifBlank { "Ledger entry" }} • ${formatDate(transaction.createdAt)}", 12f, R.color.secondary_text))
+                    val note = if (transaction.note.isBlank()) "Ledger entry" else transaction.note
+                    addView(text("$note - ${formatDate(transaction.createdAt)}", 12f, R.color.secondary_text))
                 })
             }
         }
@@ -528,7 +530,13 @@ class MainActivity : Activity() {
     }
 
     private fun initials(name: String): String {
-        return name.trim().split(Regex("\\s+")).take(2).mapNotNull { it.firstOrNull()?.toString() }.joinToString("").uppercase(Locale.US).ifBlank { "AS" }
+        val value = name.trim()
+            .split(Regex("\\s+"))
+            .take(2)
+            .mapNotNull { it.firstOrNull()?.toString() }
+            .joinToString("")
+            .uppercase(Locale.US)
+        return if (value.isBlank()) "AS" else value
     }
 
     private fun bindBottomNav(active: Screen) {
@@ -558,7 +566,6 @@ class MainActivity : Activity() {
 
     private enum class Screen {
         SPLASH,
-        LOGIN,
         DASHBOARD,
         ADD_CUSTOMER,
         CUSTOMER_LIST,

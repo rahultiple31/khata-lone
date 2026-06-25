@@ -6,8 +6,10 @@
     android:background="@drawable/bottom_nav_background"
     android:gravity="center"
     android:orientation="horizontal"
-    android:paddingHorizontal="8dp"
-    android:paddingVertical="6dp">
+    android:paddingLeft="8dp"
+    android:paddingTop="6dp"
+    android:paddingRight="8dp"
+    android:paddingBottom="6dp">
 
     <Button
         android:id="@+id/navHomeButton"
