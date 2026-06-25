@@ -2,62 +2,47 @@ name: Android CI
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
+    branches: [ "main" ]
 
 permissions:
   contents: read
 
 jobs:
   build:
-    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: 17
 
-      - name: Set up Android SDK
+      - name: Setup Android SDK
         uses: android-actions/setup-android@v4
         with:
           packages: tools platform-tools platforms;android-35 build-tools;35.0.0
 
-      - name: Set up Gradle
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.9"
 
-      - name: Run tests
-        run: gradle testDebugUnitTest --stacktrace
+      - name: Give Gradle Permission
+        run: chmod +x ./gradlew
 
-      - name: Build debug APK
-        run: gradle assembleDebug --stacktrace
+      - name: Run Tests
+        run: ./gradlew testDebugUnitTest --stacktrace
 
-      - name: Build unsigned release package
-        run: gradle assembleRelease bundleRelease --stacktrace
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
 
-      - name: Upload debug APK artifact
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: hisably-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-
-      - name: Upload unsigned release artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: hisably-release-unsigned
-          path: |
-            app/build/outputs/apk/release/app-release-unsigned.apk
-            app/build/outputs/bundle/release/app-release.aab
+          name: android-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
