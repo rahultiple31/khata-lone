@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="screen_background">#F6F7FB</color>
-    <color name="primary">#5556C9</color>
-    <color name="primary_dark">#4344AC</color>
-    <color name="primary_soft">#EEEEFF</color>
+    <color name="primary">#075AA8</color>
+    <color name="primary_dark">#064C91</color>
+    <color name="primary_soft">#E7F1FC</color>
     <color name="accent">#EEEEFF</color>
     <color name="coral">#F06E63</color>
     <color name="coral_soft">#FFF0EE</color>
@@ -12,6 +12,11 @@
     <color name="success">#28A879</color>
     <color name="success_soft">#E9F8F2</color>
     <color name="blue">#4A8DD8</color>
+    <color name="loan_blue">#17A7D9</color>
+    <color name="magenta">#C00061</color>
+    <color name="gold">#F3C34B</color>
+    <color name="pale_yellow">#FFF7D9</color>
+    <color name="divider">#ECEFF4</color>
     <color name="blue_soft">#EAF3FC</color>
     <color name="ink_card">#292A53</color>
     <color name="surface">#FFFFFF</color>

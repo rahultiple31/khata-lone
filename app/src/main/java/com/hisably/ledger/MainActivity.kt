@@ -75,7 +75,8 @@ class MainActivity : Activity() {
         val receiveCount = customers.count { database.getCustomerSummary(it.id).balance >= 0.0 }
         val payCount = customers.count { database.getCustomerSummary(it.id).balance < 0.0 }
 
-        find<TextView>(R.id.todayLabelText).text = todayLabel()
+        find<TextView>(R.id.todayLabelText).text = "Nagpur, Maharashtra"
+        find<TextView>(R.id.dashboardGreetingText).text = "Aarav Stores"
         find<TextView>(R.id.dashboardBalanceText).text = formatMoney(summary.balance)
         find<TextView>(R.id.dashboardCustomerCountText).text = "From $receiveCount customers"
         find<TextView>(R.id.dashboardPayCountText).text = "To $payCount customers"
@@ -198,7 +199,7 @@ class MainActivity : Activity() {
         setContentView(R.layout.screen_settings)
 
         find<TextView>(R.id.settingsSummaryText).text =
-            "App language\nEnglish\n\nDark mode\nAvailable in web app\n\nBackup & restore\nUse GitHub artifact APK for testing builds\n\nMobile & security\nOTP login can be added in the next version"
+            "Settings        >\nSMS Settings        >\nPayment Settings        >\nRecycle Bin        >\nApp Lock        OFF\nLanguage        >\nBackup Information        >\nDelete Khata        >\nApp Update        >"
         bindBottomNav(Screen.SETTINGS)
     }
 
@@ -310,39 +311,20 @@ class MainActivity : Activity() {
 
     private fun customerRow(customer: Customer): View {
         val summary = database.getCustomerSummary(customer.id)
-        val row = panelLayout()
-
-        row.addView(text(customer.name, 18f, R.color.primary_text, bold = true))
-        row.addView(text("Mobile: ${customer.mobile}", 14f, R.color.secondary_text))
-        row.addView(text("Balance: ${formatMoney(summary.balance)}", 16f, R.color.primary, bold = true))
-        row.addView(text("Credit: ${formatMoney(summary.totalCredit)}    Debit: ${formatMoney(summary.totalDebit)}", 14f, R.color.secondary_text))
-
-        val actions = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                topMargin = dp(12)
-            }
-        }
-
-        actions.addView(actionButton("Add entry", primary = true).apply {
-            setOnClickListener { showAddTransaction(customer.id) }
-        })
-        actions.addView(actionButton("Ledger", primary = false).apply {
-            setOnClickListener { showLedger(customer.id) }
-        })
-        row.addView(actions)
-
-        return row
+        return ledgerPartyRow(customer, summary, showSubActions = true)
     }
 
     private fun compactCustomerRow(customer: Customer): View {
         val summary = database.getCustomerSummary(customer.id)
+        return ledgerPartyRow(customer, summary, showSubActions = false)
+    }
+
+    private fun ledgerPartyRow(customer: Customer, summary: CustomerSummary, showSubActions: Boolean): View {
         val row = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
-            setPadding(dp(4), dp(12), dp(4), dp(12))
+            gravity = android.view.Gravity.CENTER_VERTICAL
+            setBackgroundColor(getColor(R.color.surface))
+            setPadding(dp(18), dp(12), dp(14), dp(12))
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -355,7 +337,7 @@ class MainActivity : Activity() {
             setTextColor(getColor(android.R.color.white))
             setTypeface(typeface, android.graphics.Typeface.BOLD)
             background = getDrawable(R.drawable.avatar_background)
-            layoutParams = LinearLayout.LayoutParams(dp(42), dp(42))
+            layoutParams = LinearLayout.LayoutParams(dp(46), dp(46))
         })
 
         row.addView(LinearLayout(this).apply {
@@ -363,21 +345,70 @@ class MainActivity : Activity() {
             layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply {
                 leftMargin = dp(12)
             }
-            addView(text(customer.name, 14f, R.color.primary_text, bold = true))
-            addView(text("+91 ${customer.mobile}", 11f, R.color.secondary_text))
+            addView(text(customer.name, 18f, R.color.primary_text))
+            addView(text("5 years ago", 13f, R.color.secondary_text))
         })
 
-        row.addView(TextView(this).apply {
-            val balance = summary.balance
-            text = formatMoney(balance)
-            setTextColor(getColor(if (balance >= 0.0) R.color.success else R.color.coral))
-            setTypeface(typeface, android.graphics.Typeface.BOLD)
-            gravity = android.view.Gravity.END
-            layoutParams = LinearLayout.LayoutParams(dp(105), ViewGroup.LayoutParams.WRAP_CONTENT)
+        val balance = summary.balance
+        row.addView(LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = android.view.Gravity.END or android.view.Gravity.CENTER_VERTICAL
+            layoutParams = LinearLayout.LayoutParams(dp(116), ViewGroup.LayoutParams.WRAP_CONTENT)
+
+            addView(TextView(this@MainActivity).apply {
+                text = formatMoney(balance)
+                setTextColor(getColor(if (balance > 0.0) R.color.magenta else R.color.secondary_text))
+                textSize = 19f
+                gravity = android.view.Gravity.END
+                if (balance > 0.0) {
+                    setTypeface(typeface, android.graphics.Typeface.BOLD)
+                }
+                layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            })
+
+            if (balance > 0.0) {
+                addView(TextView(this@MainActivity).apply {
+                    text = "REMIND >"
+                    setTextColor(getColor(R.color.primary))
+                    textSize = 12f
+                    gravity = android.view.Gravity.END
+                    setTypeface(typeface, android.graphics.Typeface.BOLD)
+                    layoutParams = LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                    )
+                })
+            } else if (showSubActions) {
+                addView(TextView(this@MainActivity).apply {
+                    text = "Ledger >"
+                    setTextColor(getColor(R.color.primary))
+                    textSize = 12f
+                    gravity = android.view.Gravity.END
+                    layoutParams = LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                    )
+                })
+            }
         })
 
         row.setOnClickListener { showLedger(customer.id) }
-        return row
+        return LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(row)
+            addView(View(this@MainActivity).apply {
+                setBackgroundColor(getColor(R.color.divider))
+                layoutParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    dp(1)
+                ).apply {
+                    leftMargin = dp(76)
+                }
+            })
+        }
     }
 
     private fun transactionRow(transaction: LedgerTransaction): View {
@@ -549,7 +580,8 @@ class MainActivity : Activity() {
             R.id.navSettingsButton to Screen.SETTINGS
         )
         buttons.forEach { (id, screen) ->
-            find<Button>(id).setTextColor(if (screen == active) activeColor else mutedColor)
+            val isActive = screen == active || (id == R.id.navHomeButton && active == Screen.CUSTOMER_LIST)
+            find<Button>(id).setTextColor(if (isActive) activeColor else mutedColor)
         }
         find<Button>(R.id.navHomeButton).setOnClickListener { showDashboard() }
         find<Button>(R.id.navCustomersButton).setOnClickListener { showCustomerList() }
@@ -579,5 +611,6 @@ class MainActivity : Activity() {
     companion object {
         private const val TYPE_CREDIT = "CREDIT"
         private const val TYPE_DEBIT = "DEBIT"
+        private const val KEY_LOGGED_IN = "KEY_LOGGED_IN"
     }
 }

@@ -8,224 +8,22 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="18dp">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="@drawable/nav_item_active_background"
-                    android:gravity="center"
-                    android:text="हि"
-                    android:textColor="@color/primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="1"
-                    android:text="@string/app_name"
-                    android:textColor="@color/primary_text"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:background="@drawable/avatar_background"
-                    android:gravity="center"
-                    android:text="AS"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/todayLabelText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:textColor="@color/primary"
-                android:textSize="11sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/dashboardGreetingText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Good morning, Aarav"
-                android:textColor="@color/primary_text"
-                android:textSize="28sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Here is how your business is doing today."
-                android:textColor="@color/secondary_text"
-                android:textSize="14sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/receive_card_background"
-                    android:orientation="vertical"
-                    android:padding="14dp">
-
-                    <TextView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:background="@drawable/nav_item_active_background"
-                        android:gravity="center"
-                        android:text="↙"
-                        android:textColor="@color/success"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="You will receive"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="11sp" />
-
-                    <TextView
-                        android:id="@+id/dashboardCreditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="@color/primary_text"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/dashboardCustomerCountText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="10sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/receive_card_background"
-                    android:orientation="vertical"
-                    android:padding="14dp">
-
-                    <TextView
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:background="@drawable/input_background"
-                        android:gravity="center"
-                        android:text="↗"
-                        android:textColor="@color/coral"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="You will pay"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="11sp" />
-
-                    <TextView
-                        android:id="@+id/dashboardDebitText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="@color/primary_text"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/dashboardPayCountText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="10sp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/receive_card_background"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:background="@drawable/nav_item_active_background"
-                    android:gravity="center"
-                    android:text="₹"
-                    android:textColor="@color/primary"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Net balance"
-                        android:textColor="@color/secondary_text"
-                        android:textSize="11sp" />
-
-                    <TextView
-                        android:id="@+id/dashboardBalanceText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="@color/primary_text"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:background="@drawable/panel_background"
+                android:layout_height="188dp"
+                android:background="@drawable/app_header_background"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingLeft="16dp"
+                android:paddingTop="28dp"
+                android:paddingRight="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -233,133 +31,303 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
+                    <TextView
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:gravity="center"
+                        android:text="H"
+                        android:textColor="@android:color/white"
+                        android:textSize="28sp"
+                        android:textStyle="bold" />
+
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
                         android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/dashboardGreetingText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Aarav Stores"
+                            android:textColor="@android:color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/todayLabelText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:textColor="#CFE3FA"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="64dp"
+                        android:layout_height="38dp"
+                        android:background="@drawable/coin_pill_background"
+                        android:gravity="center"
+                        android:text="10"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="28dp"
+                    android:gravity="bottom"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="CUSTOMERS"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="30dp"
+                        android:gravity="center"
+                        android:text="SUPPLIERS"
+                        android:textColor="#CFE3FA"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="-30dp"
+                android:layout_marginRight="14dp"
+                android:background="@drawable/summary_card_background"
+                android:elevation="2dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="82dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
                         android:orientation="vertical">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Recent customers"
+                            android:gravity="center"
+                            android:text="You will give"
                             android:textColor="@color/primary_text"
-                            android:textSize="17sp"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/dashboardDebitText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:textColor="@color/success"
+                            android:textSize="22sp"
                             android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="46dp"
+                        android:background="@color/divider" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
-                            android:text="Updated just now"
-                            android:textColor="@color/secondary_text"
-                            android:textSize="10sp" />
+                            android:gravity="center"
+                            android:text="You will get"
+                            android:textColor="@color/primary_text"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/dashboardCreditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:textColor="@color/magenta"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
-
-                    <Button
-                        android:id="@+id/customerListButton"
-                        android:layout_width="88dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/secondary_button_background"
-                        android:text="View all"
-                        android:textColor="@color/primary"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
                 </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/recentCustomersContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:background="@drawable/panel_background"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Quick actions"
-                    android:textColor="@color/primary_text"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/addCustomerButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/primary_button_background"
-                    android:text="@string/add_customer"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/addTransactionButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/secondary_button_background"
-                    android:text="Add entry"
-                    android:textColor="@color/primary"
-                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/viewReportsButton"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/secondary_button_background"
-                    android:text="View reports"
+                    android:layout_height="54dp"
+                    android:background="@color/primary_soft"
+                    android:text="View Reports"
+                    android:textAllCaps="false"
                     android:textColor="@color/primary"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/sendReminderButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/secondary_button_background"
-                    android:text="Send reminder"
-                    android:textColor="@color/primary"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:background="@drawable/insight_card_background"
-                android:orientation="vertical"
-                android:padding="18dp">
+                android:layout_height="92dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginRight="14dp"
+                android:background="@drawable/loan_banner_background"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp">
 
                 <TextView
-                    android:id="@+id/weeklyInsightText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_width="76dp"
+                    android:layout_height="76dp"
+                    android:background="@drawable/coin_pill_background"
+                    android:gravity="center"
+                    android:text="Loan"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="That is how your business is moving this week."
-                    android:textColor="#C6C7DF"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Get up to Rs 5 lakh business loan"
+                        android:textColor="@color/primary_text"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Loan requirement"
+                        android:textColor="@color/secondary_text"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/sendReminderButton"
+                    android:layout_width="74dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/primary_button_background"
+                    android:text="Check"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
                     android:textSize="12sp" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/recentTransactionsText"
+            <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginRight="14dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/search_background"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="18dp"
+                    android:text="Search Customer"
+                    android:textColor="@color/secondary_text"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/customerListButton"
+                    android:layout_width="96dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/secondary_button_background"
+                    android:text="Cashbook"
+                    android:textAllCaps="false"
+                    android:textColor="@color/primary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/recentCustomersContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="vertical" />
+
+            <Button
+                android:id="@+id/addCustomerButton"
+                android:layout_width="260dp"
+                android:layout_height="58dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="22dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/magenta_button_background"
+                android:text="+  Add Customer"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/dashboardBalanceText"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/dashboardCustomerCountText"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/dashboardPayCountText"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/weeklyInsightText"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/addTransactionButton"
+                android:layout_width="1dp"
                 android:layout_height="1dp"
                 android:visibility="gone" />
         </LinearLayout>

@@ -1,64 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/bottomNav"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="84dp"
     android:background="@drawable/bottom_nav_background"
-    android:gravity="center"
-    android:orientation="horizontal"
     android:paddingLeft="8dp"
-    android:paddingTop="6dp"
-    android:paddingRight="8dp"
-    android:paddingBottom="6dp">
+    android:paddingRight="8dp">
 
-    <Button
-        android:id="@+id/navHomeButton"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:text="⌂\nHome"
-        android:textColor="@color/secondary_text"
-        android:textSize="11sp" />
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
 
-    <Button
-        android:id="@+id/navCustomersButton"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:text="♧\nCustomers"
-        android:textColor="@color/secondary_text"
-        android:textSize="11sp" />
+        <Button
+            android:id="@+id/navHomeButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="Parties"
+            android:textAllCaps="false"
+            android:textColor="@color/secondary_text"
+            android:textSize="13sp" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/navReportsButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="Reports"
+            android:textAllCaps="false"
+            android:textColor="@color/secondary_text"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/navSettingsButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:text="More"
+            android:textAllCaps="false"
+            android:textColor="@color/secondary_text"
+            android:textSize="13sp" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/navEntryButton"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@drawable/primary_button_background"
-        android:text="+\nEntry"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="-10dp"
+        android:background="@drawable/coin_pill_background"
+        android:text="Loans"
+        android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:textSize="11sp"
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/navReportsButton"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:text="▥\nReports"
-        android:textColor="@color/secondary_text"
-        android:textSize="11sp" />
-
-    <Button
-        android:id="@+id/navSettingsButton"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@android:color/transparent"
-        android:text="⚙\nSettings"
-        android:textColor="@color/secondary_text"
-        android:textSize="11sp" />
-</LinearLayout>
+        android:id="@+id/navCustomersButton"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:visibility="gone" />
+</FrameLayout>
