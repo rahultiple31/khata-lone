@@ -145,6 +145,38 @@
           </section>
         </div>
       </section>
+
+      <!-- Auth pages -->
+      <section class="page" id="signinPage">
+        <div class="page-heading"><div><p class="eyebrow">ACCOUNT</p><h1>Sign In</h1><p>Access your Hisably account.</p></div></div>
+        <section class="panel" style="padding:24px;max-width:520px">
+          <form id="signInPageForm">
+            <label>Email or Mobile<input id="signinPageId" placeholder="name or mobile" required></label>
+            <label>Role<select id="signinPageRole"><option>Admin</option><option>Supervisor</option><option>Member</option></select></label>
+            <div style="display:flex;gap:10px;margin-top:12px"><button class="primary-btn" type="submit">Sign in</button><button class="secondary-btn" type="button" id="backToHomeFromSignIn">Back</button></div>
+          </form>
+        </section>
+      </section>
+
+      <section class="page" id="signupPage">
+        <div class="page-heading"><div><p class="eyebrow">ACCOUNT</p><h1>Sign Up</h1><p>Create a new account for Hisably.</p></div></div>
+        <section class="panel" style="padding:24px;max-width:520px">
+          <form id="signUpPageForm">
+            <label>Name<input id="signupPageName" placeholder="Your name" required></label>
+            <label>Email or Mobile<input id="signupPageId" placeholder="email or mobile" required></label>
+            <label>Role<select id="signupPageRole"><option>Member</option><option>Supervisor</option><option>Admin</option></select></label>
+            <div style="display:flex;gap:10px;margin-top:12px"><button class="primary-btn" type="submit">Create account</button><button class="secondary-btn" type="button" id="backToHomeFromSignUp">Back</button></div>
+          </form>
+        </section>
+      </section>
+
+      <section class="page" id="logoutPage">
+        <div class="page-heading"><div><p class="eyebrow">ACCOUNT</p><h1>Sign Out</h1><p>You are about to sign out.</p></div></div>
+        <section class="panel" style="padding:24px;max-width:520px;text-align:center">
+          <p id="logoutMessage">Signed in as <strong id="logoutUserName">User</strong></p>
+          <div style="display:flex;gap:10px;justify-content:center;margin-top:12px"><button class="primary-btn" id="confirmLogout">Sign out</button><button class="secondary-btn" id="cancelLogout">Cancel</button></div>
+        </section>
+      </section>
     </main>
 
     <nav class="bottom-nav" aria-label="Mobile navigation">

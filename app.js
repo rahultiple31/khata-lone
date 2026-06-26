@@ -624,22 +624,44 @@ $('#todayLabel').textContent = new Intl.DateTimeFormat('en-IN', {
 }).format(new Date()).toUpperCase();
 
 // Auth and calendar event bindings
-$('#signInBtn')?.addEventListener('click', () => openModal('signInModal'));
-$('#signUpBtn')?.addEventListener('click', () => openModal('signUpModal'));
-$('#signInForm')?.addEventListener('submit', event => {
+// Navigate to dedicated auth pages instead of modals
+$('#signInBtn')?.addEventListener('click', () => navigate('signin'));
+$('#signUpBtn')?.addEventListener('click', () => navigate('signup'));
+
+// Page form handlers
+$('#signInPageForm')?.addEventListener('submit', event => {
   event.preventDefault();
-  const id = $('#signinId').value.trim();
-  const role = $('#signinRole').value;
+  const id = $('#signinPageId').value.trim();
+  const role = $('#signinPageRole').value;
   signIn({ id, name: id, role });
+  navigate('home');
 });
-$('#signUpForm')?.addEventListener('submit', event => {
+
+$('#signUpPageForm')?.addEventListener('submit', event => {
   event.preventDefault();
-  const name = $('#signupName').value.trim();
-  const id = $('#signupId').value.trim();
-  const role = $('#signupRole').value;
+  const name = $('#signupPageName').value.trim();
+  const id = $('#signupPageId').value.trim();
+  const role = $('#signupPageRole').value;
   signUp({ id, name, role });
+  navigate('home');
 });
-$('#logoutBtn')?.addEventListener('click', () => signOut());
+
+// Back buttons on pages
+$('#backToHomeFromSignIn')?.addEventListener('click', () => navigate('home'));
+$('#backToHomeFromSignUp')?.addEventListener('click', () => navigate('home'));
+
+// Log out page actions
+$('#confirmLogout')?.addEventListener('click', () => { signOut(); navigate('signin'); });
+$('#cancelLogout')?.addEventListener('click', () => navigate('home'));
+
+// Profile top logout icon shows logout page
+$('#logoutBtn')?.addEventListener('click', () => {
+  if(currentUser){
+    $('#logoutUserName').textContent = currentUser.name || currentUser.id || 'User';
+  }
+  navigate('logout');
+});
+
 $('#topShopName')?.addEventListener('click', () => openCalendarModal());
 $('#historyView')?.addEventListener('click', event => { event.preventDefault(); renderHistory(); });
 $('#historyDownload')?.addEventListener('click', downloadHistoryCSV);
