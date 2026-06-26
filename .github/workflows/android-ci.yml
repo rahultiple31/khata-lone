@@ -40,11 +40,6 @@ jobs:
         with:
           gradle-version: "8.9"
 
-      - name: Restore signing keystore
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
-        run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
-
       - name: Verify build tools
         run: |
           gradle --version
