@@ -51,8 +51,8 @@
           <button class="icon-btn" id="helpToggle" aria-label="Help">?</button>
           <button class="icon-btn notification-btn" data-page="reminders" aria-label="Notifications">♢<i></i></button>
           <div id="authArea" style="display:flex;align-items:center;gap:10px">
-              <button class="text-btn" id="signInBtn">Sign in</button>
-              <button class="text-btn" id="signUpBtn">Sign up</button>
+              <button class="text-btn" id="signInBtn">Login</button>
+              <button class="text-btn" id="signUpBtn">Get Started</button>
               <button class="profile-top" data-page="settings" id="profileTopBtn" style="display:none"><span class="avatar" id="userAvatar">AS</span><span class="profile-top-copy"><strong id="topShopName">Aarav Stores</strong></span><span id="logoutBtn">⌄</span></button>
             </div>
         </div>
@@ -61,6 +61,24 @@
       <div class="search-overlay" id="searchOverlay">
         <span>⌕</span><input id="globalSearch" type="search" placeholder="Search customers or phone numbers..." autocomplete="off"/><button id="closeSearch">×</button>
       </div>
+
+      <section class="page active" id="landingPage">
+        <div class="panel" style="max-width:740px;margin:40px auto 20px;padding:40px;display:grid;gap:24px;">
+          <div style="display:grid;gap:16px;max-width:520px;">
+            <p class="eyebrow">HISABLY</p>
+            <h1 style="font-size:3rem;line-height:1.05;">Business hua easy</h1>
+            <p style="font-size:1.1rem;max-width:520px;color:var(--muted);">Start with your mobile number and create your account in seconds. Login anytime with the same number.</p>
+          </div>
+          <form id="landingCTAForm" style="display:grid;gap:12px;max-width:520px;">
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span style="display:inline-flex;align-items:center;padding:0 14px;background:rgba(245,246,250,1);border:1px solid #e4e7eb;border-radius:10px;height:52px;">+91</span>
+              <input id="landingPhone" type="tel" inputmode="numeric" maxlength="10" placeholder="Enter your phone number" style="flex:1;padding:0 14px;height:52px;border:1px solid #e4e7eb;border-radius:10px;" required>
+              <button class="primary-btn" type="submit" style="min-width:160px;">Get Started</button>
+            </div>
+            <button class="text-btn" type="button" id="landingLoginBtn" style="justify-self:start;">Log In</button>
+          </form>
+        </div>
+      </section>
 
       <section class="page" id="homePage">
         <div class="welcome-row">

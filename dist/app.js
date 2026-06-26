@@ -697,6 +697,18 @@ $('#todayLabel').textContent = new Intl.DateTimeFormat('en-IN', {
 // Navigate to dedicated auth pages instead of modals
 $('#signInBtn')?.addEventListener('click', () => navigate('signin'));
 $('#signUpBtn')?.addEventListener('click', () => navigate('signup'));
+$('#landingLoginBtn')?.addEventListener('click', () => navigate('signin'));
+$('#landingCTAForm')?.addEventListener('submit', event => {
+  event.preventDefault();
+  const phone = $('#landingPhone').value.trim();
+  if(!/^[0-9]{10}$/.test(phone)){
+    toast('Enter a valid 10-digit mobile number');
+    return;
+  }
+  $('#signupPageId').value = phone;
+  $('#signupPageName').focus();
+  navigate('signup');
+});
 
 // Page form handlers
 $('#signInPageForm')?.addEventListener('submit', event => {
@@ -825,9 +837,9 @@ $('#historyDownload')?.addEventListener('click', downloadHistoryCSV);
 
 render();
 
-// If no user signed in, show the Sign-In page by default
+// If no user signed in, show the landing page first
 if(!currentUser){
-  navigate('signin');
+  navigate('landing');
 }
 
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
