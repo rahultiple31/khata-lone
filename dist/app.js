@@ -462,6 +462,7 @@ function navigate(page){
   if(!target) return;
   $$('.page').forEach(section => section.classList.remove('active'));
   target.classList.add('active');
+  document.body.classList.toggle('landing-page', page === 'landing');
   $$('[data-page]').forEach(button => button.classList.toggle('active', button.dataset.page === page));
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if(innerWidth < 721) $('#searchOverlay').classList.remove('open');

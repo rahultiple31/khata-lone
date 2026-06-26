@@ -63,19 +63,27 @@
       </div>
 
       <section class="page active" id="landingPage">
-        <div class="panel" style="max-width:740px;margin:40px auto 20px;padding:40px;display:grid;gap:24px;">
-          <div style="display:grid;gap:16px;max-width:520px;">
-            <p class="eyebrow">HISABLY</p>
-            <h1 style="font-size:3rem;line-height:1.05;">Business hua easy</h1>
-            <p style="font-size:1.1rem;max-width:520px;color:var(--muted);">Start with your mobile number and create your account in seconds. Login anytime with the same number.</p>
+        <header class="landing-header">
+          <a class="brand landing-brand" href="#" aria-label="Hisably home">
+            <span class="brand-mark">हि</span>
+            <span>Khatabook</span>
+          </a>
+          <div class="landing-header-actions">
+            <div class="contact-pill"><span>📞</span><strong>9606800800</strong></div>
+            <button class="secondary-btn" type="button" id="landingLoginBtn">Log In</button>
           </div>
-          <form id="landingCTAForm" style="display:grid;gap:12px;max-width:520px;">
-            <div style="display:flex;gap:8px;align-items:center;">
-              <span style="display:inline-flex;align-items:center;padding:0 14px;background:rgba(245,246,250,1);border:1px solid #e4e7eb;border-radius:10px;height:52px;">+91</span>
-              <input id="landingPhone" type="tel" inputmode="numeric" maxlength="10" placeholder="Enter your phone number" style="flex:1;padding:0 14px;height:52px;border:1px solid #e4e7eb;border-radius:10px;" required>
-              <button class="primary-btn" type="submit" style="min-width:160px;">Get Started</button>
+        </header>
+        <div class="landing-hero">
+          <div class="landing-copy">
+            <h1>Business hua easy</h1>
+            <p>with Khatabook on Desktop</p>
+          </div>
+          <form id="landingCTAForm" class="landing-form">
+            <div class="landing-input-row">
+              <span class="landing-prefix">+91</span>
+              <input id="landingPhone" type="tel" inputmode="numeric" maxlength="10" placeholder="Enter your phone number" required>
+              <button class="primary-btn" type="submit">Get Started</button>
             </div>
-            <button class="text-btn" type="button" id="landingLoginBtn" style="justify-self:start;">Log In</button>
           </form>
         </div>
       </section>
