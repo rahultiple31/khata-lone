@@ -707,7 +707,7 @@ $('#landingCTAForm')?.addEventListener('submit', event => {
     toast('Enter a valid 10-digit mobile number');
     return;
   }
-  $('#signupPageId').value = phone;
+  $('#signupPageMobile').value = phone;
   $('#signupPageName').focus();
   navigate('signup');
 });
