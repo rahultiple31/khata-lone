@@ -192,13 +192,11 @@ function renderAuth(){
     signUpBtn.style.display = 'none';
     profileTop.style.display = 'flex';
     $('#userAvatar').textContent = initials(currentUser.name || (currentUser.id || '').toString().slice(0,2));
-    $('#userRole').textContent = currentUser.role || 'Member';
-    // Enforce supervisor date lock in entry modal
     const entryDateEl = $('#entryDate');
     if(entryDateEl){
       const today = new Date().toISOString().slice(0,10);
       entryDateEl.value = today;
-      entryDateEl.disabled = (currentUser.role === 'Supervisor');
+      entryDateEl.disabled = false;
     }
 
     // Help modal handlers
@@ -233,7 +231,7 @@ function signIn(user){
   currentUser = user;
   localStorage.setItem('hisably-user', JSON.stringify(currentUser));
   closeModals();
-  toast(`Signed in as ${currentUser.role}`);
+  toast(`Signed in as ${currentUser.name || currentUser.id}`);
   render();
 }
 
@@ -270,7 +268,6 @@ function startPendingSignup(account, noteEl, otpInputEl, verifyBtn){
   const pending = {
     id: account.id,
     name: account.name,
-    role: account.role,
     otp,
     dest,
     method: isEmail(dest) ? 'email' : 'sms',
@@ -578,15 +575,6 @@ $('#entryForm').addEventListener('submit', event => {
     return;
   }
 
-  // Supervisor restriction: only current date updates
-  if(currentUser && currentUser.role === 'Supervisor'){
-    const today = new Date().toISOString().slice(0,10);
-    if(dateVal !== today){
-      toast('Supervisor can only record entries for the current date');
-      return;
-    }
-  }
-
   if(entryType === 'credit') customer.balance += amount;
   else customer.balance -= amount;
   customer.updated = 'Just now';
@@ -709,8 +697,7 @@ $('#signUpBtn')?.addEventListener('click', () => navigate('signup'));
 $('#signInPageForm')?.addEventListener('submit', event => {
   event.preventDefault();
   const id = $('#signinPageId').value.trim();
-  const role = $('#signinPageRole').value;
-  signIn({ id, name: id, role });
+  signIn({ id, name: id });
   navigate('home');
 });
 
@@ -726,8 +713,7 @@ $('#signUpPageForm')?.addEventListener('submit', event => {
   const pending = JSON.parse(localStorage.getItem('hisably-pending-signup') || 'null');
   if(!pending){ toast('No pending signup found. Please request an OTP again.'); return; }
   if(String(pending.otp) === String(entered) && Date.now() < pending.expires){
-    // create account
-    const account = { id: pending.id, name: pending.name, role: pending.role };
+    const account = { id: pending.id, name: pending.name };
     clearPendingSignup();
     signUp(account);
     navigate('home');
@@ -740,9 +726,8 @@ $('#signUpPageForm')?.addEventListener('submit', event => {
 $('#sendSignupOTP')?.addEventListener('click', () => {
   const name = $('#signupPageName').value.trim();
   const id = $('#signupPageId').value.trim();
-  const role = $('#signupPageRole').value;
   if(!name || !id){ toast('Enter name and email or mobile'); return; }
-  startPendingSignup({ id, name, role }, $('#signupOtpNote'), $('#signupPageOTP'), $('#verifySignupOTP'));
+  startPendingSignup({ id, name }, $('#signupOtpNote'), $('#signupPageOTP'), $('#verifySignupOTP'));
 });
 
 // Modal send / verify handlers
@@ -753,7 +738,7 @@ $('#signUpForm')?.addEventListener('submit', event => {
   if(!entered){ toast('Please request an OTP and enter it here'); return; }
   const pending = JSON.parse(localStorage.getItem('hisably-pending-signup') || 'null');
   if(pending && String(pending.otp) === String(entered) && Date.now() < pending.expires){
-    const account = { id: pending.id, name: pending.name, role: pending.role };
+    const account = { id: pending.id, name: pending.name };
     clearPendingSignup();
     signUp(account);
     closeModals();
@@ -766,9 +751,8 @@ $('#signUpForm')?.addEventListener('submit', event => {
 $('#sendSignupOTPModal')?.addEventListener('click', () => {
   const name = $('#signupName').value.trim();
   const id = $('#signupId').value.trim();
-  const role = $('#signupRole').value;
   if(!name || !id){ toast('Enter name and email or mobile'); return; }
-  startPendingSignup({ id, name, role }, $('#signupModalOtpNote'), $('#signupOtpModalInput'), $('#verifySignupOTPModal'));
+  startPendingSignup({ id, name }, $('#signupModalOtpNote'), $('#signupOtpModalInput'), $('#verifySignupOTPModal'));
 });
 
 // Back buttons on pages

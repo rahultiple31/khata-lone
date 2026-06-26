@@ -53,7 +53,7 @@
           <div id="authArea" style="display:flex;align-items:center;gap:10px">
               <button class="text-btn" id="signInBtn">Sign in</button>
               <button class="text-btn" id="signUpBtn">Sign up</button>
-              <button class="profile-top" data-page="settings" id="profileTopBtn" style="display:none"><span class="avatar" id="userAvatar">AS</span><span class="profile-top-copy"><strong id="topShopName">Aarav Stores</strong><small id="userRole">Admin</small></span><span id="logoutBtn">⌄</span></button>
+              <button class="profile-top" data-page="settings" id="profileTopBtn" style="display:none"><span class="avatar" id="userAvatar">AS</span><span class="profile-top-copy"><strong id="topShopName">Aarav Stores</strong></span><span id="logoutBtn">⌄</span></button>
             </div>
         </div>
       </header>
@@ -153,7 +153,6 @@
         <section class="panel" style="padding:24px;max-width:520px">
           <form id="signInPageForm">
             <label>Email or Mobile<input id="signinPageId" placeholder="name or mobile" required></label>
-            <label>Role<select id="signinPageRole"><option>Admin</option><option>Supervisor</option><option>Member</option></select></label>
             <div style="display:flex;gap:10px;margin-top:12px"><button class="primary-btn" type="submit">Sign in</button><button class="secondary-btn" type="button" id="backToHomeFromSignIn">Back</button></div>
           </form>
         </section>
@@ -165,7 +164,6 @@
           <form id="signUpPageForm">
             <label>Name<input id="signupPageName" placeholder="Your name" required></label>
             <label>Email or Mobile<input id="signupPageId" placeholder="email or mobile" required></label>
-            <label>Role<select id="signupPageRole"><option>Member</option><option>Supervisor</option><option>Admin</option></select></label>
             <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
               <button class="primary-btn" type="button" id="sendSignupOTP">Send OTP</button>
               <input id="signupPageOTP" placeholder="Enter OTP" style="width:140px;display:none" inputmode="numeric" maxlength="6">
@@ -201,7 +199,6 @@
     <ul>
       <li>Opening the site shows the Sign-In page first.</li>
       <li>Sign up / Sign in flow navigates to home after authentication.</li>
-      <li>Supervisor cannot backdate entries (entry date disabled/locked).</li>
       <li>Log out navigates back to Sign-In.</li>
     </ul>
     <p style="margin-top:12px">Next actions you can take:</p>
@@ -228,7 +225,6 @@
     <h2>Sign in to Hisably</h2>
     <form id="signInForm">
       <label>Email or Mobile<input id="signinId" placeholder="name or mobile" required></label>
-      <label>Role<select id="signinRole"><option>Admin</option><option>Supervisor</option><option>Member</option></select></label>
       <button class="primary-btn wide" type="submit">Sign in</button>
     </form>
   </div>
@@ -240,7 +236,6 @@
     <form id="signUpForm">
       <label>Name<input id="signupName" placeholder="Your name" required></label>
       <label>Email or Mobile<input id="signupId" placeholder="email or mobile" required></label>
-      <label>Role<select id="signupRole"><option>Member</option><option>Supervisor</option><option>Admin</option></select></label>
       <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
         <button class="primary-btn wide" type="button" id="sendSignupOTPModal">Send OTP</button>
         <input id="signupOtpModalInput" placeholder="Enter OTP" style="width:160px;display:none" inputmode="numeric" maxlength="6">
