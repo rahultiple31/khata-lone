@@ -149,11 +149,25 @@
 
       <!-- Auth pages -->
       <section class="page active" id="signinPage">
-        <div class="page-heading"><div><p class="eyebrow">ACCOUNT</p><h1>Sign In</h1><p>Access your Hisably account.</p></div></div>
+        <div class="page-heading"><div><p class="eyebrow">ACCOUNT</p><h1>Sign In</h1><p>Access your Hisably account or create a new one below.</p></div></div>
         <section class="panel" style="padding:24px;max-width:520px">
           <form id="signInPageForm">
-            <label>Email or Mobile<input id="signinPageId" placeholder="name or mobile" required></label>
+            <label>Email or Mobile<input id="signinPageId" placeholder="Email or mobile" required></label>
             <div style="display:flex;gap:10px;margin-top:12px"><button class="primary-btn" type="submit">Sign in</button><button class="secondary-btn" type="button" id="backToHomeFromSignIn">Back</button></div>
+          </form>
+        </section>
+        <section class="panel" style="padding:24px;max-width:520px;margin-top:20px">
+          <div class="page-heading"><h2>Create account</h2><p>Fill in the details below and verify with OTP.</p></div>
+          <form id="signUpInlineForm">
+            <label>Name<input id="signinCreateName" placeholder="Your name" required></label>
+            <label>Contact number<input id="signinCreateContact" placeholder="10 digit mobile" inputmode="numeric" maxlength="10" required></label>
+            <label>Email ID<input id="signinCreateEmail" placeholder="Email ID" type="email" required></label>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
+              <button class="primary-btn" type="button" id="sendSigninCreateOtp">Send OTP</button>
+              <input id="signinCreateOtp" placeholder="Enter OTP" style="width:150px;display:none" inputmode="numeric" maxlength="6">
+              <button class="primary-btn" type="submit" id="signinCreateVerifyOtp" style="display:none">Verify & Create</button>
+            </div>
+            <div id="signinCreateOtpNote" style="margin-top:8px;font-size:13px;color:var(--muted);display:none"></div>
           </form>
         </section>
       </section>

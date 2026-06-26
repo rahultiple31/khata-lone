@@ -263,11 +263,13 @@ function maskMobile(mobile){
 }
 
 function startPendingSignup(account, noteEl, otpInputEl, verifyBtn){
-  const dest = account.id;
+  const dest = account.email || account.contact || account.id;
   const otp = generateOTP();
   const pending = {
-    id: account.id,
+    id: account.id || dest,
     name: account.name,
+    contact: account.contact || '',
+    email: account.email || '',
     otp,
     dest,
     method: isEmail(dest) ? 'email' : 'sms',
@@ -300,6 +302,9 @@ function clearPendingSignup(){
   $('#signupOtpModalInput') && ($('#signupOtpModalInput').style.display = 'none');
   $('#verifySignupOTPModal') && ($('#verifySignupOTPModal').style.display = 'none');
   $('#signupModalOtpNote') && ($('#signupModalOtpNote').style.display = 'none');
+  $('#signinCreateOtp') && ($('#signinCreateOtp').style.display = 'none');
+  $('#signinCreateVerifyOtp') && ($('#signinCreateVerifyOtp').style.display = 'none');
+  $('#signinCreateOtpNote') && ($('#signinCreateOtpNote').style.display = 'none');
 }
 
 function openCalendarModal(){
@@ -697,13 +702,13 @@ $('#signUpBtn')?.addEventListener('click', () => navigate('signup'));
 $('#signInPageForm')?.addEventListener('submit', event => {
   event.preventDefault();
   const id = $('#signinPageId').value.trim();
+  if(!id){ toast('Enter your email or mobile to sign in'); return; }
   signIn({ id, name: id });
   navigate('home');
 });
 
 $('#signUpPageForm')?.addEventListener('submit', event => {
   event.preventDefault();
-  // Verify OTP and create account
   const otpInput = $('#signupPageOTP');
   const entered = otpInput && otpInput.style.display !== 'none' ? (otpInput.value || '').trim() : '';
   if(!entered){
@@ -713,7 +718,7 @@ $('#signUpPageForm')?.addEventListener('submit', event => {
   const pending = JSON.parse(localStorage.getItem('hisably-pending-signup') || 'null');
   if(!pending){ toast('No pending signup found. Please request an OTP again.'); return; }
   if(String(pending.otp) === String(entered) && Date.now() < pending.expires){
-    const account = { id: pending.id, name: pending.name };
+    const account = { id: pending.id, name: pending.name, contact: pending.contact, email: pending.email };
     clearPendingSignup();
     signUp(account);
     navigate('home');
@@ -730,6 +735,49 @@ $('#sendSignupOTP')?.addEventListener('click', () => {
   startPendingSignup({ id, name }, $('#signupOtpNote'), $('#signupPageOTP'), $('#verifySignupOTP'));
 });
 
+// Inline sign-in page create-account handlers
+$('#signUpInlineForm')?.addEventListener('submit', event => {
+  event.preventDefault();
+  const otpInput = $('#signinCreateOtp');
+  const entered = otpInput && otpInput.style.display !== 'none' ? (otpInput.value || '').trim() : '';
+  if(!entered){
+    toast('Please request an OTP and enter it here');
+    return;
+  }
+  const pending = JSON.parse(localStorage.getItem('hisably-pending-signup') || 'null');
+  if(!pending){ toast('No pending signup found. Please request an OTP again.'); return; }
+  if(String(pending.otp) === String(entered) && Date.now() < pending.expires){
+    const account = { id: pending.id, name: pending.name, contact: pending.contact, email: pending.email };
+    clearPendingSignup();
+    signUp(account);
+    navigate('home');
+  } else {
+    toast('Invalid or expired OTP');
+  }
+});
+
+$('#sendSigninCreateOtp')?.addEventListener('click', () => {
+  const name = $('#signinCreateName').value.trim();
+  const contact = $('#signinCreateContact').value.trim();
+  const email = $('#signinCreateEmail').value.trim();
+  if(!name || !contact || !email){ toast('Enter name, contact number and email'); return; }
+  if(!/^[0-9]{10}$/.test(contact)){
+    toast('Enter a valid 10-digit contact number');
+    return;
+  }
+  if(!isEmail(email)){
+    toast('Enter a valid email address');
+    return;
+  }
+  const id = email || contact;
+  startPendingSignup(
+    { id, name, contact, email },
+    $('#signinCreateOtpNote'),
+    $('#signinCreateOtp'),
+    $('#signinCreateVerifyOtp')
+  );
+});
+
 // Modal send / verify handlers
 $('#signUpForm')?.addEventListener('submit', event => {
   event.preventDefault();
@@ -738,7 +786,7 @@ $('#signUpForm')?.addEventListener('submit', event => {
   if(!entered){ toast('Please request an OTP and enter it here'); return; }
   const pending = JSON.parse(localStorage.getItem('hisably-pending-signup') || 'null');
   if(pending && String(pending.otp) === String(entered) && Date.now() < pending.expires){
-    const account = { id: pending.id, name: pending.name };
+    const account = { id: pending.id, name: pending.name, contact: pending.contact, email: pending.email };
     clearPendingSignup();
     signUp(account);
     closeModals();
