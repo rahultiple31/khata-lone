@@ -200,6 +200,27 @@ function renderAuth(){
       entryDateEl.value = today;
       entryDateEl.disabled = (currentUser.role === 'Supervisor');
     }
+
+    // Help modal handlers
+    document.getElementById('helpToggle')?.addEventListener('click', ()=>{
+      openModal('helpModal');
+    });
+    document.getElementById('downloadMermaid')?.addEventListener('click', ()=>{
+      const mermaid = `%%{init: {"theme": "default"}}%%\nflowchart LR\n  signin((Sign-In)) -->|auth| dashboard((Dashboard))\n  signup((Sign-Up)) -->|create| signin\n  signout((Log-Out)) --> signin`;
+      const blob = new Blob([mermaid], {type:'text/plain;charset=utf-8'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'flow.mmd'; document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    });
+    document.getElementById('openReadme')?.addEventListener('click', ()=>{
+      openInNewTab('README-deploy.md');
+    });
+
+    function openInNewTab(path){
+      // try to open a local file link; if not supported, show an alert
+      try{ window.open(path, '_blank'); }catch(e){ alert('Open '+path+' in editor.'); }
+    }
   } else {
     signInBtn.style.display = '';
     signUpBtn.style.display = '';
@@ -226,6 +247,62 @@ function signOut(){
 function signUp(account){
   // basic local signup (no backend)
   signIn(account);
+}
+
+// OTP helpers for demo (client-side simulated)
+function generateOTP(){
+  return Math.floor(100000 + Math.random() * 900000);
+}
+
+function isEmail(value){
+  return /@/.test(value);
+}
+
+function maskMobile(mobile){
+  const digits = String(mobile).replace(/\D/g,'');
+  if(digits.length < 4) return mobile;
+  return digits.slice(0,2) + '••••' + digits.slice(-2);
+}
+
+function startPendingSignup(account, noteEl, otpInputEl, verifyBtn){
+  const dest = account.id;
+  const otp = generateOTP();
+  const pending = {
+    id: account.id,
+    name: account.name,
+    role: account.role,
+    otp,
+    dest,
+    method: isEmail(dest) ? 'email' : 'sms',
+    expires: Date.now() + 5 * 60 * 1000
+  };
+  localStorage.setItem('hisably-pending-signup', JSON.stringify(pending));
+
+  // Mock sending: log and show toast
+  if(pending.method === 'email'){
+    console.log(`Mock OTP sent to email ${dest}: ${otp}`);
+    toast('OTP sent to ' + dest);
+    if(noteEl) { noteEl.style.display = ''; noteEl.textContent = 'OTP sent to ' + dest + '. Check your email (mock).'; }
+  } else {
+    console.log(`Mock OTP sent to mobile ${dest}: ${otp}`);
+    toast('OTP sent to ' + maskMobile(dest));
+    if(noteEl) { noteEl.style.display = ''; noteEl.textContent = 'OTP sent to ' + maskMobile(dest) + ' (mock SMS).'; }
+  }
+
+  // Show OTP input & verify button
+  if(otpInputEl){ otpInputEl.style.display = ''; otpInputEl.value = ''; otpInputEl.focus(); }
+  if(verifyBtn){ verifyBtn.style.display = ''; }
+}
+
+function clearPendingSignup(){
+  localStorage.removeItem('hisably-pending-signup');
+  // hide UI elements if present
+  $('#signupPageOTP') && ($('#signupPageOTP').style.display = 'none');
+  $('#verifySignupOTP') && ($('#verifySignupOTP').style.display = 'none');
+  $('#signupOtpNote') && ($('#signupOtpNote').style.display = 'none');
+  $('#signupOtpModalInput') && ($('#signupOtpModalInput').style.display = 'none');
+  $('#verifySignupOTPModal') && ($('#verifySignupOTPModal').style.display = 'none');
+  $('#signupModalOtpNote') && ($('#signupModalOtpNote').style.display = 'none');
 }
 
 function openCalendarModal(){
@@ -639,11 +716,59 @@ $('#signInPageForm')?.addEventListener('submit', event => {
 
 $('#signUpPageForm')?.addEventListener('submit', event => {
   event.preventDefault();
+  // Verify OTP and create account
+  const otpInput = $('#signupPageOTP');
+  const entered = otpInput && otpInput.style.display !== 'none' ? (otpInput.value || '').trim() : '';
+  if(!entered){
+    toast('Please click Send OTP first and enter the code');
+    return;
+  }
+  const pending = JSON.parse(localStorage.getItem('hisably-pending-signup') || 'null');
+  if(!pending){ toast('No pending signup found. Please request an OTP again.'); return; }
+  if(String(pending.otp) === String(entered) && Date.now() < pending.expires){
+    // create account
+    const account = { id: pending.id, name: pending.name, role: pending.role };
+    clearPendingSignup();
+    signUp(account);
+    navigate('home');
+  } else {
+    toast('Invalid or expired OTP');
+  }
+});
+
+// Send OTP from Sign-Up page
+$('#sendSignupOTP')?.addEventListener('click', () => {
   const name = $('#signupPageName').value.trim();
   const id = $('#signupPageId').value.trim();
   const role = $('#signupPageRole').value;
-  signUp({ id, name, role });
-  navigate('home');
+  if(!name || !id){ toast('Enter name and email or mobile'); return; }
+  startPendingSignup({ id, name, role }, $('#signupOtpNote'), $('#signupPageOTP'), $('#verifySignupOTP'));
+});
+
+// Modal send / verify handlers
+$('#signUpForm')?.addEventListener('submit', event => {
+  event.preventDefault();
+  const otpInput = $('#signupOtpModalInput');
+  const entered = otpInput && otpInput.style.display !== 'none' ? (otpInput.value || '').trim() : '';
+  if(!entered){ toast('Please request an OTP and enter it here'); return; }
+  const pending = JSON.parse(localStorage.getItem('hisably-pending-signup') || 'null');
+  if(pending && String(pending.otp) === String(entered) && Date.now() < pending.expires){
+    const account = { id: pending.id, name: pending.name, role: pending.role };
+    clearPendingSignup();
+    signUp(account);
+    closeModals();
+    navigate('home');
+  } else {
+    toast('Invalid or expired OTP');
+  }
+});
+
+$('#sendSignupOTPModal')?.addEventListener('click', () => {
+  const name = $('#signupName').value.trim();
+  const id = $('#signupId').value.trim();
+  const role = $('#signupRole').value;
+  if(!name || !id){ toast('Enter name and email or mobile'); return; }
+  startPendingSignup({ id, name, role }, $('#signupModalOtpNote'), $('#signupOtpModalInput'), $('#verifySignupOTPModal'));
 });
 
 // Back buttons on pages
@@ -667,6 +792,11 @@ $('#historyView')?.addEventListener('click', event => { event.preventDefault(); 
 $('#historyDownload')?.addEventListener('click', downloadHistoryCSV);
 
 render();
+
+// If no user signed in, show the Sign-In page by default
+if(!currentUser){
+  navigate('signin');
+}
 
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   navigator.serviceWorker.register('./sw.js').catch(() => {});

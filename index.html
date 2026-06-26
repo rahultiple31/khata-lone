@@ -47,9 +47,10 @@
       <header class="topbar">
         <button class="mobile-brand" data-page="home"><span class="brand-mark">हि</span><span>Hisably</span></button>
         <div class="topbar-actions">
-            <button class="icon-btn" id="searchToggle" aria-label="Search">⌕</button>
-            <button class="icon-btn notification-btn" data-page="reminders" aria-label="Notifications">♢<i></i></button>
-            <div id="authArea" style="display:flex;align-items:center;gap:10px">
+          <button class="icon-btn" id="searchToggle" aria-label="Search">⌕</button>
+          <button class="icon-btn" id="helpToggle" aria-label="Help">?</button>
+          <button class="icon-btn notification-btn" data-page="reminders" aria-label="Notifications">♢<i></i></button>
+          <div id="authArea" style="display:flex;align-items:center;gap:10px">
               <button class="text-btn" id="signInBtn">Sign in</button>
               <button class="text-btn" id="signUpBtn">Sign up</button>
               <button class="profile-top" data-page="settings" id="profileTopBtn" style="display:none"><span class="avatar" id="userAvatar">AS</span><span class="profile-top-copy"><strong id="topShopName">Aarav Stores</strong><small id="userRole">Admin</small></span><span id="logoutBtn">⌄</span></button>
@@ -61,7 +62,7 @@
         <span>⌕</span><input id="globalSearch" type="search" placeholder="Search customers or phone numbers..." autocomplete="off"/><button id="closeSearch">×</button>
       </div>
 
-      <section class="page active" id="homePage">
+      <section class="page" id="homePage">
         <div class="welcome-row">
           <div><p class="eyebrow" id="todayLabel"></p><h1><span data-i18n="goodMorning">Good morning</span>, Aarav <span class="wave">👋</span></h1><p data-i18n="overviewCopy">Here’s how your business is doing today.</p></div>
           <button class="primary-btn" data-action="add-customer"><span>＋</span><span data-i18n="addCustomer">Add customer</span></button>
@@ -147,7 +148,7 @@
       </section>
 
       <!-- Auth pages -->
-      <section class="page" id="signinPage">
+      <section class="page active" id="signinPage">
         <div class="page-heading"><div><p class="eyebrow">ACCOUNT</p><h1>Sign In</h1><p>Access your Hisably account.</p></div></div>
         <section class="panel" style="padding:24px;max-width:520px">
           <form id="signInPageForm">
@@ -165,7 +166,13 @@
             <label>Name<input id="signupPageName" placeholder="Your name" required></label>
             <label>Email or Mobile<input id="signupPageId" placeholder="email or mobile" required></label>
             <label>Role<select id="signupPageRole"><option>Member</option><option>Supervisor</option><option>Admin</option></select></label>
-            <div style="display:flex;gap:10px;margin-top:12px"><button class="primary-btn" type="submit">Create account</button><button class="secondary-btn" type="button" id="backToHomeFromSignUp">Back</button></div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
+              <button class="primary-btn" type="button" id="sendSignupOTP">Send OTP</button>
+              <input id="signupPageOTP" placeholder="Enter OTP" style="width:140px;display:none" inputmode="numeric" maxlength="6">
+              <button class="primary-btn" type="submit" id="verifySignupOTP" style="display:none">Verify & Create</button>
+              <button class="secondary-btn" type="button" id="backToHomeFromSignUp">Back</button>
+            </div>
+            <div id="signupOtpNote" style="margin-top:8px;font-size:13px;color:var(--muted);display:none"></div>
           </form>
         </section>
       </section>
@@ -186,6 +193,23 @@
       <button data-page="reports"><span>▥</span><small data-i18n="reports">Reports</small></button>
       <button data-page="settings"><span>⚙</span><small data-i18n="settings">Settings</small></button>
     </nav>
+  </div>
+  <div class="modal" id="helpModal" role="dialog" aria-modal="true">
+    <button class="modal-close" data-close>×</button>
+    <span class="modal-kicker">TEST CHECKLIST</span>
+    <h2>Pre-deployment checklist</h2>
+    <ul>
+      <li>Opening the site shows the Sign-In page first.</li>
+      <li>Sign up / Sign in flow navigates to home after authentication.</li>
+      <li>Supervisor cannot backdate entries (entry date disabled/locked).</li>
+      <li>Log out navigates back to Sign-In.</li>
+    </ul>
+    <p style="margin-top:12px">Next actions you can take:</p>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="primary-btn" id="downloadMermaid">Download flow diagram (Mermaid)</button>
+      <button class="secondary-btn" id="openReadme">Open deploy instructions</button>
+    </div>
+    <p style="margin-top:12px;color:var(--muted);font-size:13px">Note: Pushing to `gh-pages` or exporting release APK requires repository permissions and CI configuration.</p>
   </div>
 
   <div class="modal-backdrop" id="modalBackdrop"></div>
@@ -217,7 +241,12 @@
       <label>Name<input id="signupName" placeholder="Your name" required></label>
       <label>Email or Mobile<input id="signupId" placeholder="email or mobile" required></label>
       <label>Role<select id="signupRole"><option>Member</option><option>Supervisor</option><option>Admin</option></select></label>
-      <button class="primary-btn wide" type="submit">Create account</button>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
+        <button class="primary-btn wide" type="button" id="sendSignupOTPModal">Send OTP</button>
+        <input id="signupOtpModalInput" placeholder="Enter OTP" style="width:160px;display:none" inputmode="numeric" maxlength="6">
+        <button class="primary-btn wide" type="submit" id="verifySignupOTPModal" style="display:none">Verify & Create</button>
+      </div>
+      <div id="signupModalOtpNote" style="margin-top:8px;font-size:13px;color:var(--muted);display:none"></div>
     </form>
   </div>
 
