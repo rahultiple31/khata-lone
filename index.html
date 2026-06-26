@@ -191,7 +191,8 @@
         <section class="panel" style="padding:24px;max-width:520px">
           <form id="signUpPageForm">
             <label>Name<input id="signupPageName" placeholder="Your name" required></label>
-            <label>Email or Mobile<input id="signupPageId" placeholder="email or mobile" required></label>
+            <label>Mobile<input id="signupPageMobile" placeholder="10 digit mobile" inputmode="numeric" maxlength="10" required></label>
+            <label>Email ID (optional)<input id="signupPageEmail" placeholder="Email ID (optional)" type="email"></label>
             <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
               <button class="primary-btn" type="button" id="sendSignupOTP">Send OTP</button>
               <input id="signupPageOTP" placeholder="Enter OTP" style="width:140px;display:none" inputmode="numeric" maxlength="6">
