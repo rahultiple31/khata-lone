@@ -699,6 +699,7 @@ $('#todayLabel').textContent = new Intl.DateTimeFormat('en-IN', {
 $('#signInBtn')?.addEventListener('click', () => navigate('signin'));
 $('#signUpBtn')?.addEventListener('click', () => navigate('signup'));
 $('#landingLoginBtn')?.addEventListener('click', () => navigate('signin'));
+$('#landingSignupBtn')?.addEventListener('click', () => navigate('signup'));
 $('#landingCTAForm')?.addEventListener('submit', event => {
   event.preventDefault();
   const phone = $('#landingPhone').value.trim();
