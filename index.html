@@ -195,9 +195,11 @@
             <label>Email ID (optional)<input id="signupPageEmail" placeholder="Email ID (optional)" type="email"></label>
             <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
               <button class="primary-btn" type="button" id="sendSignupOTP">Send OTP</button>
+              <button class="secondary-btn" type="button" id="backToHomeFromSignUp">Back</button>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:12px">
               <input id="signupPageOTP" placeholder="Enter OTP" style="width:140px;display:none" inputmode="numeric" maxlength="6">
               <button class="primary-btn" type="submit" id="verifySignupOTP" style="display:none">Verify & Create</button>
-              <button class="secondary-btn" type="button" id="backToHomeFromSignUp">Back</button>
             </div>
             <div id="signupOtpNote" style="margin-top:8px;font-size:13px;color:var(--muted);display:none"></div>
           </form>
