@@ -152,6 +152,31 @@ Choose one:
 
 Install it on an Android phone for testing. If Android blocks the install, enable **Settings > Security > Install unknown apps > Allow** for the app you use to open the APK.
 
+### Install APK on Android mobile
+
+GitHub Actions can build and upload the APK, but it cannot directly install the APK on your personal phone. Install it manually after downloading:
+
+1. On GitHub, open **Actions > Android CI/CD > latest successful run**.
+2. Download the artifact named `android-debug-apk`.
+3. Extract the downloaded ZIP file.
+4. Send `app-debug.apk` to your Android phone using USB, WhatsApp, Google Drive, email, or direct browser download.
+5. On the phone, tap `app-debug.apk`.
+6. If Android blocks it, enable install permission for that app:
+
+```text
+Settings > Security > Install unknown apps > Allow
+```
+
+7. Tap **Install**, then open **Hisably**.
+
+If your phone is connected to your computer with USB debugging enabled, you can install with ADB:
+
+```powershell
+adb install -r app\build\outputs\apk\debug\app-debug.apk
+```
+
+Use the downloaded `app-debug.apk` path if you are installing the APK from the GitHub Actions artifact instead of a local build.
+
 ### Deployment options
 
 - **GitHub Actions Artifacts**: Best for simple testing after every push.
