@@ -25,34 +25,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Test React source
-        run: npm test
-
-      - name: Build React web app
-        run: |
-          npm run build
-          touch dist/.nojekyll
-
       - name: Check required app files
         shell: bash
         run: |
           set -euo pipefail
 
           required_files=(
-            "dist/index.html"
-            "dist/manifest.webmanifest"
-            "dist/sw.js"
-            "dist/icon.svg"
-            "dist/assets/icons/icon-192.png"
-            "dist/assets/icons/icon-512.png"
+            "index.html"
+            "styles.css"
+            "app.js"
+            "manifest.webmanifest"
+            "sw.js"
+            "icon.svg"
+            "assets/icons/icon-192.png"
+            "assets/icons/icon-512.png"
           )
 
           for file in "${required_files[@]}"; do
@@ -67,20 +53,20 @@ jobs:
         run: |
           set -euo pipefail
 
-          grep -q 'rel="manifest"' dist/index.html || {
-            echo "::error file=dist/index.html::index.html must link the web app manifest"
+          grep -q 'rel="manifest"' index.html || {
+            echo "::error file=index.html::index.html must link the web app manifest"
             exit 1
           }
 
-          grep -q 'serviceWorker.register' src/App.jsx || {
-            echo "::error file=src/App.jsx::React app must register the service worker"
+          grep -q 'navigator.serviceWorker.register' app.js || {
+            echo "::error file=app.js::app.js must register the service worker"
             exit 1
           }
 
           node <<'NODE'
           const fs = require('fs');
 
-          const manifest = JSON.parse(fs.readFileSync('dist/manifest.webmanifest', 'utf8'));
+          const manifest = JSON.parse(fs.readFileSync('manifest.webmanifest', 'utf8'));
           const requiredManifestFields = [
             'name',
             'short_name',
@@ -112,15 +98,17 @@ jobs:
               process.exit(1);
             }
 
-            if (!fs.existsSync(`dist/${icon.src}`)) {
+            if (!fs.existsSync(icon.src)) {
               console.error(`::error file=manifest.webmanifest::Manifest icon file does not exist: ${icon.src}`);
               process.exit(1);
             }
           }
 
-          const serviceWorker = fs.readFileSync('dist/sw.js', 'utf8');
+          const serviceWorker = fs.readFileSync('sw.js', 'utf8');
           for (const asset of [
             'index.html',
+            'styles.css',
+            'app.js',
             'manifest.webmanifest',
             'icon.svg',
             'assets/icons/icon-192.png',
@@ -132,6 +120,17 @@ jobs:
             }
           }
           NODE
+
+      - name: Build static package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          rm -rf dist
+          mkdir -p dist/assets/icons
+          cp index.html styles.css app.js manifest.webmanifest sw.js icon.svg README.md dist/
+          cp assets/icons/icon-192.png assets/icons/icon-512.png dist/assets/icons/
+          touch dist/.nojekyll
 
       - name: Upload ready app artifact
         uses: actions/upload-artifact@v4

@@ -1,42 +1,41 @@
-# Deploying Hisably React Web App
+# Deploying Hisably Web App
 
-Hisably is deployed as a Vite React static web app. GitHub Actions builds the app with Node.js and publishes the generated `dist/` folder.
+This project is a Progressive Web App designed to be served as static files. The included `scripts/build_dist.ps1` prepares a deployable `dist/` folder.
 
-## Local Build
+## Build the `dist/` package (Windows PowerShell)
 
-```powershell
-npm install
-npm run build
-```
-
-Or use the Windows helper:
+Open PowerShell in the repo root and run:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build_dist.ps1
+cd .\scripts
+powershell -NoProfile -ExecutionPolicy Bypass -File .\build_dist.ps1
 ```
 
-## Preview Build
+After running the script, the `dist/` folder will contain the files required for deployment.
 
-```powershell
-npm run preview
+## Serve locally for verification
+
+You can serve `dist/` with a simple static server. Using Node's `http-server`:
+
+```bash
+npx http-server dist -c-1
+# open http://localhost:8080
 ```
 
-## GitHub Pages Deployment
+Or with Python:
 
-Push to `main`. The workflow below builds and deploys the React app:
-
-```text
-.github/workflows/static.yml
+```bash
+cd dist
+python -m http.server 8000
+# open http://localhost:8000
 ```
 
-The deployed website is:
+## Deploy options
 
-```text
-https://rahultiple31.github.io/khata-lone/
-```
+- GitHub Pages: push the `dist/` contents to the `gh-pages` branch (or use Actions to deploy).
+- Static hosts: Netlify, Vercel, Firebase Hosting, or any static host support.
 
 ## Notes
 
-- App data is stored in the browser with `localStorage`.
-- Authentication and backup are client-side demo features.
-- This repository contains only Node.js, React, CSS, and PWA web code.
+- Current authentication is client-side only (no backend). For production, add server-side authentication and secure storage for user accounts.
+- This repository deploys only the web application. Native mobile code and packaging workflows are not included.

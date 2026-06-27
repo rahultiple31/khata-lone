@@ -1,7 +1,9 @@
-const CACHE = 'hisably-react-v1';
+const CACHE = 'hisably-v3';
 const ASSETS = [
   './',
   './index.html',
+  './styles.css',
+  './app.js',
   './icon.svg',
   './manifest.webmanifest',
   './assets/icons/icon-192.png',
