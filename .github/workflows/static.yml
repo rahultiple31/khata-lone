@@ -31,16 +31,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Build web package
-        shell: bash
+      - name: Install dependencies
+        run: npm ci
+      - name: Build React web app
         run: |
-          set -euo pipefail
-          rm -rf dist
-          mkdir -p dist/assets/icons
-          cp index.html styles.css app.js manifest.webmanifest sw.js icon.svg README.md dist/
-          cp assets/icons/icon-192.png assets/icons/icon-512.png dist/assets/icons/
+          npm run build
           touch dist/.nojekyll
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

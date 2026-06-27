@@ -1,73 +1,86 @@
 # Hisably
 
-Hisably is a mobile-first web ledger for small businesses. It includes customers, credit/payment entries, balance totals, reminders, reports, browser-local backup, multilingual UI, a shop profile, PDF-ready print output, dark mode, and installable PWA support.
+Hisably is a mobile-first React web ledger for small businesses. It helps track customers, credit entries, payments, balances, transaction history, reports, reminders, shop settings, dark mode, local browser storage, JSON backup, and installable PWA support.
+
+This repository is web-only. Native mobile code and mobile package workflows are not included.
+
+## Tech Stack
+
+- Node.js
+- React
+- Vite
+- CSS
+- Browser `localStorage`
+- Progressive Web App assets in `public/`
+- GitHub Actions for web build and GitHub Pages deployment
 
 ## Run Locally
 
-Open `index.html` directly, or serve this folder with any static file server.
+Install Node.js 20 or newer, then run:
 
 ```powershell
-python -m http.server 8000
+npm install
+npm run dev
 ```
 
-Then open:
+Open the local URL printed by Vite, usually:
 
 ```text
-http://localhost:8000
+http://localhost:5173/khata-lone/
 ```
 
-All demo data and changes are stored in browser `localStorage`. Use **Settings > Backup & restore** in the web app to download a JSON backup.
+## Build Web App
 
-## Web App Files
+```powershell
+npm run build
+```
+
+The production web app is generated in:
+
+```text
+dist/
+```
+
+On Windows, you can also run:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build_dist.ps1
+```
+
+## Project Structure
 
 ```text
 index.html
-styles.css
-app.js
-manifest.webmanifest
-sw.js
-icon.svg
-assets/icons/icon-192.png
-assets/icons/icon-512.png
-scripts/build_dist.ps1
-.github/workflows/static.yml
-.github/workflows/ci-cd.yml
+package.json
+vite.config.js
+src/
+  App.jsx
+  App.css
+  main.jsx
+public/
+  manifest.webmanifest
+  sw.js
+  icon.svg
+  assets/icons/icon-192.png
+  assets/icons/icon-512.png
+scripts/
+  validate-source.mjs
+  build_dist.ps1
+.github/workflows/
+  ci-cd.yml
+  static.yml
 ```
 
-## Deploy To GitHub Pages
+## GitHub Actions
 
-This repository deploys only the web application.
-
-The GitHub Pages workflow is:
-
-```text
-.github/workflows/static.yml
-```
-
-It runs automatically when code is pushed to `main` and deploys the static web app to GitHub Pages.
+- `ci-cd.yml`: installs Node dependencies, tests source files, builds the React app, validates PWA output, and uploads the `dist/` artifact.
+- `static.yml`: installs Node dependencies, builds the React app, and deploys `dist/` to GitHub Pages.
 
 Live site:
 
 ```text
 https://rahultiple31.github.io/khata-lone/
 ```
-
-## Build Web Package
-
-To prepare a static `dist/` folder on Windows:
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build_dist.ps1
-```
-
-The generated `dist/` folder can be uploaded to any static host.
-
-## GitHub Actions
-
-- `static.yml`: deploys the web app to GitHub Pages.
-- `ci-cd.yml`: validates required web/PWA files and uploads a ready web artifact.
-
-There is no native mobile package pipeline in this repo anymore. The native mobile project, build files, and mobile packaging workflow were removed so this repository deploys only the web application.
 
 ## Install As Web App On Mobile
 
@@ -78,4 +91,4 @@ After the site is deployed over HTTPS:
 3. Choose **Add to Home screen** or **Install app**.
 4. Open Hisably from the home screen.
 
-This installs the web PWA experience, not a native app package.
+This installs the React PWA experience.

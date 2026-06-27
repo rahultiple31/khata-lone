@@ -1,41 +1,42 @@
-# Deploying Hisably Web App
+# Deploying Hisably React Web App
 
-This project is a Progressive Web App designed to be served as static files. The included `scripts/build_dist.ps1` prepares a deployable `dist/` folder.
+Hisably is deployed as a Vite React static web app. GitHub Actions builds the app with Node.js and publishes the generated `dist/` folder.
 
-## Build the `dist/` package (Windows PowerShell)
-
-Open PowerShell in the repo root and run:
+## Local Build
 
 ```powershell
-cd .\scripts
-powershell -NoProfile -ExecutionPolicy Bypass -File .\build_dist.ps1
+npm install
+npm run build
 ```
 
-After running the script, the `dist/` folder will contain the files required for deployment.
+Or use the Windows helper:
 
-## Serve locally for verification
-
-You can serve `dist/` with a simple static server. Using Node's `http-server`:
-
-```bash
-npx http-server dist -c-1
-# open http://localhost:8080
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build_dist.ps1
 ```
 
-Or with Python:
+## Preview Build
 
-```bash
-cd dist
-python -m http.server 8000
-# open http://localhost:8000
+```powershell
+npm run preview
 ```
 
-## Deploy options
+## GitHub Pages Deployment
 
-- GitHub Pages: push the `dist/` contents to the `gh-pages` branch (or use Actions to deploy).
-- Static hosts: Netlify, Vercel, Firebase Hosting, or any static host support.
+Push to `main`. The workflow below builds and deploys the React app:
+
+```text
+.github/workflows/static.yml
+```
+
+The deployed website is:
+
+```text
+https://rahultiple31.github.io/khata-lone/
+```
 
 ## Notes
 
-- Current authentication is client-side only (no backend). For production, add server-side authentication and secure storage for user accounts.
-- This repository deploys only the web application. Native mobile code and packaging workflows are not included.
+- App data is stored in the browser with `localStorage`.
+- Authentication and backup are client-side demo features.
+- This repository contains only Node.js, React, CSS, and PWA web code.
