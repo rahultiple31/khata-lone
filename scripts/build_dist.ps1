@@ -8,7 +8,7 @@ Write-Host "Cleaning old dist at $dist"
 if (Test-Path $dist) { Remove-Item -Recurse -Force $dist }
 New-Item -ItemType Directory -Path $dist | Out-Null
 
-$files = @('index.html','styles.css','app.js','manifest.webmanifest','sw.js','icon.svg','README.md')
+$files = @('index.html','404.html','styles.css','app.js','manifest.webmanifest','sw.js','icon.svg','README.md')
 foreach ($f in $files) {
     $src = Join-Path $repoRoot $f
     if (Test-Path $src) {

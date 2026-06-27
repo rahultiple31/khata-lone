@@ -39,7 +39,7 @@ jobs:
           set -euo pipefail
           rm -rf dist
           mkdir -p dist/assets/icons
-          cp index.html styles.css app.js manifest.webmanifest sw.js icon.svg README.md dist/
+          cp index.html 404.html styles.css app.js manifest.webmanifest sw.js icon.svg README.md dist/
           cp assets/icons/icon-192.png assets/icons/icon-512.png dist/assets/icons/
           touch dist/.nojekyll
       - name: Upload artifact
