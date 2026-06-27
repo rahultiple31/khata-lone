@@ -699,6 +699,7 @@ $('#todayLabel').textContent = new Intl.DateTimeFormat('en-IN', {
 $('#signInBtn')?.addEventListener('click', () => navigate('signin'));
 $('#signUpBtn')?.addEventListener('click', () => navigate('signup'));
 $('#landingLoginBtn')?.addEventListener('click', () => navigate('signin'));
+$('#landingSignupBtn')?.addEventListener('click', () => navigate('signup'));
 $('#landingCTAForm')?.addEventListener('submit', event => {
   event.preventDefault();
   const phone = $('#landingPhone').value.trim();
@@ -706,7 +707,7 @@ $('#landingCTAForm')?.addEventListener('submit', event => {
     toast('Enter a valid 10-digit mobile number');
     return;
   }
-  $('#signupPageId').value = phone;
+  $('#signupPageMobile').value = phone;
   $('#signupPageName').focus();
   navigate('signup');
 });
@@ -743,9 +744,11 @@ $('#signUpPageForm')?.addEventListener('submit', event => {
 // Send OTP from Sign-Up page
 $('#sendSignupOTP')?.addEventListener('click', () => {
   const name = $('#signupPageName').value.trim();
-  const id = $('#signupPageId').value.trim();
-  if(!name || !id){ toast('Enter name and email or mobile'); return; }
-  startPendingSignup({ id, name }, $('#signupOtpNote'), $('#signupPageOTP'), $('#verifySignupOTP'));
+  const mobile = ($('#signupPageMobile').value || '').replace(/\D/g, '').trim();
+  const email = $('#signupPageEmail').value.trim();
+  if(!name || mobile.length !== 10){ toast('Enter name and a valid 10-digit mobile number'); return; }
+  if(email && !isEmail(email)){ toast('Enter a valid email address or leave it blank'); return; }
+  startPendingSignup({ id: mobile, name, contact: mobile, email }, $('#signupOtpNote'), $('#signupPageOTP'), $('#verifySignupOTP'));
 });
 
 // Inline sign-in page create-account handlers

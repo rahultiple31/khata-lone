@@ -1,158 +1,81 @@
 # Hisably
 
-An original, mobile-first digital ledger for small businesses. Hisably includes customers, credit/payment entries, balance totals, reminders, reports, browser-local backup, multilingual UI, a shop profile, PDF-ready print output, and dark mode.
+Hisably is a mobile-first web ledger for small businesses. It includes customers, credit/payment entries, balance totals, reminders, reports, browser-local backup, multilingual UI, a shop profile, PDF-ready print output, dark mode, and installable PWA support.
 
-## Run locally
+## Run Locally
 
-Open `index.html` directly, or serve this folder with any static file server. When served over HTTP/HTTPS, the included web manifest and service worker make the app installable on supported Android browsers.
-
-All demo data and changes are stored in browser `localStorage`. Use **Settings > Backup & restore** to download a JSON backup.
-
-## Android PWA build
-
-This repository includes a GitHub Actions workflow at `.github/workflows/ci-cd.yml`.
-
-- Pull requests and pushes validate the Android-installable PWA files, manifest, icons, and service worker cache list.
-- The workflow uploads a ready static artifact named `hisably-android-pwa`.
-- For manual GitHub Pages deployment, serve the repository root or the downloaded artifact contents.
-- After it is available over HTTPS, Android users can open the site in Chrome and choose **Add to Home screen** or **Install app**.
-
-## Native Android app
-
-This repository also includes a beginner-friendly native Android ledger app built with Kotlin, XML, and local SQLite storage.
-
-### Important Android languages and tools
-
-- **Kotlin**: The main recommended language for modern Android development. Use it for screens, app logic, events, and data handling.
-- **Java**: Older Android apps and many libraries still use Java. It is useful to understand because Kotlin and Java work together on Android.
-- **XML**: Used for traditional Android layouts, colors, strings, themes, and manifest configuration.
-- **Gradle**: The Android build system. It downloads dependencies, compiles Kotlin/Java, runs tests, and creates APK/AAB files.
-- **Basic SQL/SQLite**: Useful for saving local app data on the phone, such as customers, transactions, notes, and settings.
-- **Optional JavaScript/React Native**: A cross-platform option when you want to build Android and iOS apps with JavaScript/TypeScript.
-- **Optional Dart/Flutter**: A cross-platform option from Google for Android, iOS, web, and desktop apps using Dart.
-
-### Project structure
-
-```text
-settings.gradle
-build.gradle
-gradle.properties
-gradlew
-gradlew.bat
-app/
-  build.gradle
-  src/main/AndroidManifest.xml
-  src/main/java/com/hisably/ledger/LedgerDatabaseHelper.kt
-  src/main/java/com/hisably/ledger/LedgerMath.kt
-  src/main/java/com/hisably/ledger/LedgerModels.kt
-  src/main/java/com/hisably/ledger/MainActivity.kt
-  src/main/res/layout/activity_splash.xml
-  src/main/res/layout/screen_add_customer.xml
-  src/main/res/layout/screen_add_transaction.xml
-  src/main/res/layout/screen_customer_list.xml
-  src/main/res/layout/screen_dashboard.xml
-  src/main/res/layout/screen_ledger.xml
-  src/main/res/layout/screen_login.xml
-  src/main/res/values/colors.xml
-  src/main/res/values/strings.xml
-  src/main/res/values/styles.xml
-  src/test/java/com/hisably/ledger/LedgerMathTest.kt
-.github/workflows/android-ci.yml
-```
-
-### Native app features
-
-- Splash screen and login screen.
-- Dashboard with customer count, total credit, total debit, balance, and recent transactions.
-- Add customer with name, mobile number, and opening balance.
-- Customer list with quick actions for adding entries and viewing ledger.
-- Add credit/debit transaction with amount and note.
-- Customer ledger with balance summary and transaction history.
-- Local SQLite database for customers and transactions.
-
-### Build locally
-
-Install Android Studio or the Android SDK, Java 17, and Gradle 8.9 or newer. Then run:
+Open `index.html` directly, or serve this folder with any static file server.
 
 ```powershell
-.\gradlew.bat testDebugUnitTest
-.\gradlew.bat assembleDebug
+python -m http.server 8000
 ```
 
-On macOS/Linux, use:
-
-```bash
-chmod +x ./gradlew
-./gradlew testDebugUnitTest
-./gradlew assembleDebug
-```
-
-The debug APK will be created at:
+Then open:
 
 ```text
-app/build/outputs/apk/debug/app-debug.apk
+http://localhost:8000
 ```
 
-### Push code to GitHub
+All demo data and changes are stored in browser `localStorage`. Use **Settings > Backup & restore** in the web app to download a JSON backup.
 
-For a new repository:
-
-```powershell
-git init
-git status -sb
-git add .
-git commit -m "Initial Android app"
-git branch -M main
-git remote add origin https://github.com/USERNAME/REPO-NAME.git
-git push -u origin main
-```
-
-For this existing repository, use:
-
-```powershell
-git add .
-git commit -m "Update Android app"
-git push origin main
-```
-
-### Run GitHub Actions pipeline
-
-The Android CI pipeline runs automatically when you push to `main`.
-
-### Android APK delivery flow
+## Web App Files
 
 ```text
-Developer
-  |
-  v
-Push code to GitHub
-  |
-  v
-GitHub Actions builds APK
-  |
-  v
-Choose one:
-  |-- GitHub Artifacts: download for testing
-  |-- GitHub Releases: share APK
-  |-- Firebase App Distribution: beta testing
-  `-- Google Play Internal Testing: recommended before production
+index.html
+styles.css
+app.js
+manifest.webmanifest
+sw.js
+icon.svg
+assets/icons/icon-192.png
+assets/icons/icon-512.png
+scripts/build_dist.ps1
+.github/workflows/static.yml
+.github/workflows/ci-cd.yml
 ```
 
-### Download APK artifact
+## Deploy To GitHub Pages
 
-1. Open the completed **Android CI** workflow run.
-2. Scroll to **Artifacts**.
-3. Download `android-debug-apk`.
-4. Unzip it to get `app-debug.apk`.
+This repository deploys only the web application.
 
-Install it on an Android phone for testing. If Android blocks the install, enable **Settings > Security > Install unknown apps > Allow** for the app you use to open the APK.
+The GitHub Pages workflow is:
 
-### Deployment options
+```text
+.github/workflows/static.yml
+```
 
-- **GitHub Actions Artifacts**: Best for simple testing after every push.
-- **GitHub Releases**: Best for sharing APK files with other people.
-- **Firebase App Distribution**: Good for sharing APK builds with testers quickly.
-- **Google Play Console internal testing track**: Recommended before production.
-- **Google Play Store**: Main public production release channel.
+It runs automatically when code is pushed to `main` and deploys the static web app to GitHub Pages.
 
-For Google Play Store, upload a signed Android App Bundle (`.aab`). For Firebase App Distribution or GitHub Releases, you can share a signed APK with testers.
+Live site:
+
+```text
+https://rahultiple31.github.io/khata-lone/
+```
+
+## Build Web Package
+
+To prepare a static `dist/` folder on Windows:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\build_dist.ps1
+```
+
+The generated `dist/` folder can be uploaded to any static host.
+
+## GitHub Actions
+
+- `static.yml`: deploys the web app to GitHub Pages.
+- `ci-cd.yml`: validates required web/PWA files and uploads a ready web artifact.
+
+There is no native mobile package pipeline in this repo anymore. The native mobile project, build files, and mobile packaging workflow were removed so this repository deploys only the web application.
+
+## Install As Web App On Mobile
+
+After the site is deployed over HTTPS:
+
+1. Open `https://rahultiple31.github.io/khata-lone/` in Chrome on your phone.
+2. Tap the browser menu.
+3. Choose **Add to Home screen** or **Install app**.
+4. Open Hisably from the home screen.
+
+This installs the web PWA experience, not a native app package.

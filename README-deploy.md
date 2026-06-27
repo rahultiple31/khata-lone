@@ -1,4 +1,4 @@
-# Deploying Hisably (Static PWA)
+# Deploying Hisably Web App
 
 This project is a Progressive Web App designed to be served as static files. The included `scripts/build_dist.ps1` prepares a deployable `dist/` folder.
 
@@ -38,4 +38,4 @@ python -m http.server 8000
 ## Notes
 
 - Current authentication is client-side only (no backend). For production, add server-side authentication and secure storage for user accounts.
-- Release APK creation is handled separately by the Android CI workflow.
+- This repository deploys only the web application. Native mobile code and packaging workflows are not included.

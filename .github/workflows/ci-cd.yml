@@ -1,4 +1,4 @@
-name: Build Android PWA
+name: Build Web PWA
 
 on:
   push:
@@ -43,12 +43,12 @@ jobs:
 
           for file in "${required_files[@]}"; do
             test -f "$file" || {
-              echo "::error file=$file::Required Android PWA file is missing"
+              echo "::error file=$file::Required web PWA file is missing"
               exit 1
             }
           done
 
-      - name: Validate Android PWA metadata
+      - name: Validate web PWA metadata
         shell: bash
         run: |
           set -euo pipefail
@@ -86,7 +86,7 @@ jobs:
           }
 
           if (manifest.display !== 'standalone') {
-            console.error('::error file=manifest.webmanifest::Android installability expects display to be standalone');
+            console.error('::error file=manifest.webmanifest::PWA installability expects display to be standalone');
             process.exit(1);
           }
 
@@ -135,6 +135,6 @@ jobs:
       - name: Upload ready app artifact
         uses: actions/upload-artifact@v4
         with:
-          name: hisably-android-pwa
+          name: hisably-web-pwa
           path: dist
           if-no-files-found: error
