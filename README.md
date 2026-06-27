@@ -52,7 +52,9 @@ app/
   src/main/res/layout/screen_customer_list.xml
   src/main/res/layout/screen_dashboard.xml
   src/main/res/layout/screen_ledger.xml
+  src/main/res/layout/screen_loans.xml
   src/main/res/layout/screen_login.xml
+  src/main/res/layout/screen_suppliers.xml
   src/main/res/values/colors.xml
   src/main/res/values/strings.xml
   src/main/res/values/styles.xml
@@ -63,12 +65,15 @@ app/
 ### Native app features
 
 - Splash screen and login screen.
-- Dashboard with customer count, total credit, total debit, balance, and recent transactions.
+- Khatabook-style dashboard with shop header, Customers/Suppliers tabs, give/get summary, loan banner, search/filter row, and bottom navigation.
 - Add customer with name, mobile number, and opening balance.
-- Customer list with quick actions for adding entries and viewing ledger.
+- Customer search on dashboard and customer list.
+- Supplier empty state for purchase-ledger expansion.
+- Loans screen with business loan offer/pre-check guidance.
 - Add credit/debit transaction with amount and note.
 - Customer ledger with balance summary and transaction history.
-- Local SQLite database for customers and transactions.
+- Reports, reminders, and More/settings screens inspired by the Hisably web app.
+- Local SQLite database for customers, seeded sample data, and transactions.
 
 ### Build locally
 

@@ -61,10 +61,10 @@
         android:layout_gravity="top|center_horizontal"
         android:layout_marginTop="-10dp"
         android:background="@drawable/coin_pill_background"
-        android:text="Loans"
+        android:text="Up to&#10;&#8377;5 LAKH&#10;Loan"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
-        android:textSize="11sp"
+        android:textSize="10sp"
         android:textStyle="bold" />
 
     <Button

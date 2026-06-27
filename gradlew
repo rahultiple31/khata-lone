@@ -1,14 +1,9 @@
 #!/usr/bin/env sh
-##############################################################################
-##
-## Gradle start up script for UN*X
-##
-##############################################################################
 
-if [ -n "$JAVA_HOME" ] && [ -x "$JAVA_HOME/bin/java" ]; then
-  JAVA_CMD="$JAVA_HOME/bin/java"
-else
-  JAVA_CMD="java"
+if command -v gradle >/dev/null 2>&1; then
+  exec gradle "$@"
 fi
 
-exec "$JAVA_CMD" -jar "$(dirname "$0")/gradle/wrapper/gradle-wrapper.jar" "$@"
+echo "Gradle is not installed or available on PATH."
+echo "Install Gradle 8.9+ locally, or run this project through GitHub Actions."
+exit 1

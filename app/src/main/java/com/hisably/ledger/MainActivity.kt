@@ -4,6 +4,8 @@ import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -85,11 +87,15 @@ class MainActivity : Activity() {
         find<TextView>(R.id.weeklyInsightText).text = "You collected ${formatMoney(summary.totalDebit)} this week"
 
         val recentCustomers = find<LinearLayout>(R.id.recentCustomersContainer)
-        recentCustomers.removeAllViews()
-        customers.take(4).forEach { customer ->
-            recentCustomers.addView(compactCustomerRow(customer))
-        }
+        renderCustomerPreview(customers, recentCustomers, "")
 
+        find<EditText>(R.id.dashboardSearchInput).addTextChangedListener(simpleWatcher { query ->
+            renderCustomerPreview(customers, recentCustomers, query)
+        })
+
+        find<TextView>(R.id.dashboardCustomersTab).setOnClickListener { showDashboard() }
+        find<TextView>(R.id.dashboardSuppliersTab).setOnClickListener { showSuppliers() }
+        find<TextView>(R.id.dashboardFilterButton).setOnClickListener { toast("Showing all customers") }
         find<Button>(R.id.addCustomerButton).setOnClickListener { showAddCustomer() }
         find<Button>(R.id.customerListButton).setOnClickListener { showCustomerList() }
         find<Button>(R.id.addTransactionButton).setOnClickListener { showAddTransaction() }
@@ -136,21 +142,38 @@ class MainActivity : Activity() {
         val customers = database.getCustomers()
         val emptyText = find<TextView>(R.id.customerListEmptyText)
         val container = find<LinearLayout>(R.id.customerListContainer)
-        container.removeAllViews()
+        renderCustomerList(customers, container, emptyText, "")
 
-        if (customers.isEmpty()) {
-            emptyText.visibility = View.VISIBLE
-            emptyText.text = "No customers yet. Add your first customer to start the ledger."
-        } else {
-            emptyText.visibility = View.GONE
-            customers.forEach { customer ->
-                container.addView(customerRow(customer))
-            }
-        }
-
+        find<EditText>(R.id.customerSearchInput).addTextChangedListener(simpleWatcher { query ->
+            renderCustomerList(customers, container, emptyText, query)
+        })
+        find<TextView>(R.id.customerFilterButton).setOnClickListener { toast("All customers selected") }
         find<Button>(R.id.addCustomerFromListButton).setOnClickListener { showAddCustomer() }
         find<Button>(R.id.backFromCustomersButton).setOnClickListener { showDashboard() }
         bindBottomNav(Screen.CUSTOMER_LIST)
+    }
+
+    private fun showSuppliers() {
+        currentScreen = Screen.SUPPLIERS
+        currentLedgerCustomerId = null
+        setContentView(R.layout.screen_suppliers)
+
+        find<TextView>(R.id.suppliersCustomersTab).setOnClickListener { showDashboard() }
+        find<Button>(R.id.addSupplierButton).setOnClickListener {
+            toast("Supplier ledger will be added next. Use customers for credit/debit now.")
+        }
+        bindBottomNav(Screen.SUPPLIERS)
+    }
+
+    private fun showLoans() {
+        currentScreen = Screen.LOANS
+        currentLedgerCustomerId = null
+        setContentView(R.layout.screen_loans)
+
+        find<Button>(R.id.checkLoanOfferButton).setOnClickListener {
+            toast("Loan pre-check ready. Keep ledger payments updated.")
+        }
+        bindBottomNav(Screen.LOANS)
     }
 
     private fun showReports() {
@@ -535,7 +558,8 @@ class MainActivity : Activity() {
     }
 
     private fun formatMoney(amount: Double): String {
-        val prefix = if (amount < 0.0) "-₹" else "₹"
+        val rupee = "\u20B9"
+        val prefix = if (amount < 0.0) "-$rupee" else rupee
         return prefix + String.format(Locale.US, "%,.0f", kotlin.math.abs(amount))
     }
 
@@ -585,9 +609,65 @@ class MainActivity : Activity() {
         }
         find<Button>(R.id.navHomeButton).setOnClickListener { showDashboard() }
         find<Button>(R.id.navCustomersButton).setOnClickListener { showCustomerList() }
-        find<Button>(R.id.navEntryButton).setOnClickListener { showAddTransaction() }
+        find<Button>(R.id.navEntryButton).setOnClickListener { showLoans() }
         find<Button>(R.id.navReportsButton).setOnClickListener { showReports() }
         find<Button>(R.id.navSettingsButton).setOnClickListener { showSettings() }
+    }
+
+    private fun renderCustomerPreview(customers: List<Customer>, container: LinearLayout, query: String) {
+        container.removeAllViews()
+        val filtered = filterCustomers(customers, query).take(5)
+        if (filtered.isEmpty()) {
+            container.addView(text("No matching customers found.", 15f, R.color.secondary_text))
+            return
+        }
+        filtered.forEach { customer ->
+            container.addView(compactCustomerRow(customer))
+        }
+    }
+
+    private fun renderCustomerList(
+        customers: List<Customer>,
+        container: LinearLayout,
+        emptyText: TextView,
+        query: String
+    ) {
+        container.removeAllViews()
+        val filtered = filterCustomers(customers, query)
+        if (filtered.isEmpty()) {
+            emptyText.visibility = View.VISIBLE
+            emptyText.text = if (query.isBlank()) {
+                "No customers yet. Add your first customer to start the ledger."
+            } else {
+                "No customers found for \"$query\"."
+            }
+        } else {
+            emptyText.visibility = View.GONE
+            filtered.forEach { customer ->
+                container.addView(customerRow(customer))
+            }
+        }
+    }
+
+    private fun filterCustomers(customers: List<Customer>, query: String): List<Customer> {
+        val value = query.trim().lowercase(Locale.US)
+        if (value.isBlank()) {
+            return customers
+        }
+        return customers.filter { customer ->
+            customer.name.lowercase(Locale.US).contains(value) ||
+                customer.mobile.replace(" ", "").contains(value.replace(" ", ""))
+        }
+    }
+
+    private fun simpleWatcher(onTextChanged: (String) -> Unit): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                onTextChanged(s?.toString().orEmpty())
+            }
+            override fun afterTextChanged(s: Editable?) = Unit
+        }
     }
 
     private fun toast(message: String) {
@@ -605,7 +685,9 @@ class MainActivity : Activity() {
         LEDGER,
         REPORTS,
         REMINDERS,
-        SETTINGS
+        SETTINGS,
+        SUPPLIERS,
+        LOANS
     }
 
     companion object {
